@@ -4,12 +4,12 @@ class Task {
   #dueDate;
   #priority;
 
-  // TODO: Add default values for dueDate (should be the current datetime) and priority (should be from P1 - P4)
+  // TODO: Add default values for dueDate (should be the current datetime)
   constructor({ name, description = "", dueDate, priority } = {}) {
     this.#name = name;
     this.#description = description;
     this.#dueDate = dueDate;
-    this.#priority = priority;
+    this.#priority = this.#validatePriority(priority);
   }
 
   get name() {
@@ -28,6 +28,15 @@ class Task {
   get priority() {
     return this.#priority;
   }
+
+  #validatePriority(priority) {
+    const validPriorities = { P1: 1, P2: 2, P3: 3, P4: 4 };
+    if (!(priority in validPriorities)) {
+      throw new Error(`Invalid priority ${priority}`);
+    }
+
+    return validPriorities[priority];
+  }
 }
 
 // TEST
@@ -35,10 +44,7 @@ const task = new Task({
   name: "My Task",
   description: "This is my first task",
   dueDate: new Date().toString(),
-  priority: "P1",
+  priority: "P5",
 });
 
-console.log(task.name);
-console.log(task.description);
-console.log(task.dueDate);
 console.log(task.priority);
