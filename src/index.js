@@ -6,7 +6,7 @@ class Task {
 
   // TODO: Add default values for dueDate (should be the current datetime)
   constructor({ name, description = "", dueDate, priority } = {}) {
-    this.#name = name;
+    this.#name = this.#validateName(name);
     this.#description = description;
     this.#dueDate = dueDate;
     this.#priority = this.#validatePriority(priority);
@@ -29,8 +29,18 @@ class Task {
     return this.#priority;
   }
 
+  #validateName(name) {
+    if (name === null || name === undefined)
+      throw new Error(`Invalid task name: ${name}`);
+
+    if (name === "") throw new Error("Task name is empty");
+
+    return name;
+  }
+
   #validatePriority(priority) {
     const validPriorities = { P1: 1, P2: 2, P3: 3, P4: 4 };
+
     if (!(priority in validPriorities)) {
       throw new Error(`Invalid priority ${priority}`);
     }
@@ -41,10 +51,10 @@ class Task {
 
 // TEST
 const task = new Task({
-  name: "My Task",
+  name: "task",
   description: "This is my first task",
   dueDate: new Date().toString(),
-  priority: "P5",
+  priority: "P3",
 });
 
-console.log(task.priority);
+console.log(task.name);
