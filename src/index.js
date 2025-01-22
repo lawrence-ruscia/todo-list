@@ -4,11 +4,10 @@ class Task {
   #dueDate;
   #priority;
 
-  // TODO: Add default values for dueDate (should be the current datetime)
   constructor({ name, description, dueDate, priority } = {}) {
     this.#name = this.#validateName(name);
     this.#description = this.#validateDescription(description);
-    this.#dueDate = dueDate;
+    this.#dueDate = this.#validateDueDate(dueDate);
     this.#priority = this.#validatePriority(priority);
   }
 
@@ -20,7 +19,6 @@ class Task {
     return this.#description;
   }
 
-  // TODO: Use date-fns for better formatting
   get dueDate() {
     return this.#dueDate;
   }
@@ -42,6 +40,10 @@ class Task {
     return description ?? "";
   }
 
+  #validateDueDate(date) {
+    return date ?? new Date();
+  }
+
   #validatePriority(priority) {
     const validPriorities = { P1: 1, P2: 2, P3: 3, P4: 4 };
 
@@ -57,8 +59,8 @@ class Task {
 const task = new Task({
   name: "task",
   description: undefined,
-  dueDate: new Date().toString(),
+  dueDate: new Date("2022-05-21"),
   priority: "P3",
 });
 
-console.log(task.description);
+console.log(task.dueDate);
