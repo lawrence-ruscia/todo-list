@@ -1,14 +1,20 @@
 class Task {
+  #id;
   #name;
   #description;
   #dueDate;
   #priority;
 
   constructor({ name, description, dueDate, priority } = {}) {
+    this.#id = crypto.randomUUID(); // Generate UUID
     this.#name = this.#validateName(name);
     this.#description = this.#validateDescription(description);
     this.#dueDate = this.#validateDueDate(dueDate);
     this.#priority = this.#validatePriority(priority);
+  }
+
+  get id() {
+    return this.#id;
   }
 
   get name() {
@@ -51,16 +57,42 @@ class Task {
       throw new Error(`Invalid priority ${priority}`);
     }
 
-    return validPriorities[priority];
+    return priority;
   }
+
+  // Override toJSON() to preserve methods and private properties
+  toJSON() {
+    return {
+      id: this.#id,
+      name: this.#name,
+      description: this.#description,
+      dueDate: this.#dueDate,
+      priority: this.#priority,
+    };
+  }
+}
+
+class Todo {
+  // TODO: Add check for already existing tasks
+  addTask(task) {
+    if (typeof task !== "object" || task === null)
+      throw new Error(`Invalid Task ${JSON.stringify(task)}`);
+
+    localStorage.setItem(task.id, JSON.stringify(task));
+    console.log(`Added task: ${task.name}`);
+  }
+
+  getTask() {}
 }
 
 // TEST
 const task = new Task({
-  name: "task",
+  name: "myTask",
   description: undefined,
   dueDate: new Date("2022-05-21"),
   priority: "P3",
 });
 
-console.log(task.dueDate);
+const todo = new Todo();
+
+todo.addTask(task);
