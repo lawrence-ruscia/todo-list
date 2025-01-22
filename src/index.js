@@ -73,7 +73,6 @@ class Task {
 }
 
 class Todo {
-  // TODO: Add check for already existing tasks
   addTask(task) {
     if (!task || !task.id || !task.name)
       throw new Error(`Invalid Task ${JSON.stringify(task)}`);
@@ -90,7 +89,7 @@ class Todo {
   getTask(taskID) {
     const taskData = JSON.parse(localStorage.getItem(taskID));
 
-    // Rehydrate to preserve as Task instance
+    // Rehydrate to preserve Task instance
     const task = new Task(taskData);
 
     console.log(`Retrieved task ${task.name}`);
