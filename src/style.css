@@ -1,0 +1,24 @@
+body {
+  min-height: 100vh;
+  display: grid;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 2fr;
+}
+
+#header {
+  background-color: yellow;
+  grid-area: header;
+}
+
+#sidebar {
+  background-color: red;
+  grid-area: sidebar;
+}
+
+#content {
+  background-color: lightblue;
+  grid-area: main;
+}
