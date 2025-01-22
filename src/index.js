@@ -75,24 +75,48 @@ class Task {
 class Todo {
   // TODO: Add check for already existing tasks
   addTask(task) {
-    if (typeof task !== "object" || task === null)
+    if (!task || !task.id || !task.name)
       throw new Error(`Invalid Task ${JSON.stringify(task)}`);
+
+    if (localStorage.getItem(task.id)) {
+      console.warn(`Task with ID ${task.id} already exists.`);
+      return;
+    }
 
     localStorage.setItem(task.id, JSON.stringify(task));
     console.log(`Added task: ${task.name}`);
   }
 
-  getTask() {}
+  getTask(taskID) {
+    const taskData = JSON.parse(localStorage.getItem(taskID));
+
+    // Rehydrate to preserve as Task instance
+    const task = new Task(taskData);
+
+    console.log(`Retrieved task ${task.name}`);
+    return task;
+  }
 }
 
 // TEST
-const task = new Task({
+const task1 = new Task({
   name: "myTask",
   description: undefined,
   dueDate: new Date("2022-05-21"),
   priority: "P3",
 });
 
+const task2 = new Task({
+  name: "myTask",
+  description: undefined,
+  dueDate: new Date("2022-05-21"),
+  priority: "P3",
+});
 const todo = new Todo();
 
-todo.addTask(task);
+todo.addTask(task1);
+
+const task1Data = todo.getTask(task1.id);
+
+console.log(JSON.stringify(task1Data));
+console.log(JSON.stringify(task1));
