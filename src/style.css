@@ -15,9 +15,11 @@
   --color-secondary: #262626;
   --color-outline: #cccccc;
   --color-border: #cccccc25;
+  --color-placeholder: #808080;
   --color-delete: #ff7f74;
   --color-cta: #de4c4a;
   --color-text-secondary: #f07f75;
+  --color-cta-hover: #de8d4a1f;
   --color-priority-1: #d1453b;
   --color-priority-2: #eb8909;
   --color-priority-3: #246fe0;
@@ -92,6 +94,13 @@ input {
 .button--large {
   padding: var(--button-padding-large);
   font-size: var(--button-font-large);
+}
+
+.btn-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 #header {
@@ -193,15 +202,33 @@ input {
 
 .task__option {
   background-color: inherit;
-
   border: 0;
   width: 28px;
   padding: 0;
 }
 
-.task-btn-img {
-  display: block;
+.add-task {
+  margin-left: 0.6rem;
+}
+
+.add-task__btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  padding: 0;
+}
+
+.add-task__icon {
+  width: 28px;
+  height: auto;
+}
+
+.add-task__btn:hover .add-task__text {
+  color: var(--color-text-secondary);
+}
+
+.add-task__text {
+  color: var(--color-placeholder);
 }
