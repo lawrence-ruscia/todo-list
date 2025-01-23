@@ -1,5 +1,6 @@
 import "./style.css";
 import "./normalize.css";
+
 class Task {
   #id;
   #name;

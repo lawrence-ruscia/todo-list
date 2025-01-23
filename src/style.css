@@ -1,20 +1,207 @@
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-VariableFontopszwght.eot");
+  src: url("./assets/fonts/Inter-VariableFontopszwght.eot?#iefix")
+      format("embedded-opentype"),
+    url("./assets/fonts/Inter-VariableFontopszwght.woff2") format("woff2"),
+    url("./assets/fonts/Inter-VariableFontopszwght.woff") format("woff"),
+    url("./assets/fonts/Inter-VariableFontopszwght.ttf") format("truetype"),
+    url("./assets/fonts/Inter-VariableFontopszwght.svg#Inter") format("svg");
+}
+
+:root {
+  --color-text-primary: #ffffff;
+  --color-primary: #1e1e1e;
+  --color-secondary: #262626;
+  --color-outline: #cccccc;
+  --color-border: #cccccc25;
+  --color-delete: #ff7f74;
+  --color-cta: #de4c4a;
+  --color-text-secondary: #f07f75;
+  --color-priority-1: #d1453b;
+  --color-priority-2: #eb8909;
+  --color-priority-3: #246fe0;
+
+  --button-padding-small: 4px 8px;
+  --button-padding-medium: 8px 16px;
+  --button-padding-large: 12px 24px;
+
+  --button-font-small: 0.875rem;
+  --button-font-medium: 1rem;
+  --button-font-large: 1.125rem;
+
+  --title-font-size: 2.1rem;
+
+  /* Spacing (rem-based) */
+  --spacing-xxs: 0.25rem; /* 4px */
+  --spacing-xs: 0.5rem; /* 8px */
+  --spacing-sm: 1rem; /* 16px */
+  --spacing-md: 1.5rem; /* 24px */
+  --spacing-lg: 2rem; /* 32px */
+  --spacing-xl: 3rem; /* 48px */
+  --spacing-xxl: 4rem; /* 64px */
+
+  /* Border-Radius */
+  --radius-x-small: 4px;
+  --radius-small: 8px;
+  --radius-medium: 12px;
+  --radius-large: 16px;
+  --radius-x-large: 24px;
+  --radius-round: 50%;
+
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+}
+
 body {
   min-height: 100vh;
   display: grid;
   grid-template-areas: "sidebar main";
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 18vw 1fr;
+
+  font-family: "Inter", serif;
+  color: var(--color-text-primary);
+}
+
+button,
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+button,
+input {
+  color: inherit;
+  background-color: inherit;
+  border: 0;
+}
+
+.button--small {
+  padding: var(--button-padding-small);
+  font-size: var(--button-font-small);
+}
+
+.button--medium {
+  padding: var(--button-padding-medium);
+  font-size: var(--button-font-medium);
+}
+
+.button--large {
+  padding: var(--button-padding-large);
+  font-size: var(--button-font-large);
 }
 
 #header {
-  background-color: yellow;
+  background-color: var(--color-primary);
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.header__button {
+  padding: 12px 6px;
+
+  color: var(--color-outline);
+
+  font-size: var(--button-font-large);
+  font-weight: var(--font-weight-bold);
 }
 
 #sidebar {
-  background-color: red;
+  background-color: var(--color-secondary);
   grid-area: sidebar;
 }
 
-#content {
-  background-color: lightblue;
+#main {
+  background-color: var(--color-primary);
   grid-area: main;
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+#content {
+  background-color: var(--color-primary);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1.2rem;
+
+  margin: 0 auto;
+  width: 1000px;
+}
+
+.project-title {
+  width: 100%;
+
+  display: grid;
+}
+
+.title-input {
+  border-radius: var(--radius-x-small);
+
+  padding: var(--spacing-xs);
+
+  font-size: var(--title-font-size);
+  font-weight: var(--font-weight-bold);
+}
+
+.title-input:hover,
+.title-input:active {
+  outline: 1px solid var(--color-border);
+}
+
+.task-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-left: 0.6rem;
+  padding: var(--spacing-xxs) 0;
+
+  border-bottom: 1px solid var(--color-border);
+
+  cursor: pointer;
+}
+
+.task__details {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.task__checkbox {
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  outline: none;
+}
+
+.task__options {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.task__option {
+  background-color: inherit;
+
+  border: 0;
+  width: 28px;
+  padding: 0;
+}
+
+.task-btn-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

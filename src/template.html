@@ -7,6 +7,121 @@
   </head>
   <body>
     <aside id="sidebar">aside</aside>
-    <main id="content"><header id="header">header</header></main>
+    <main id="main">
+      <header id="header">
+        <button class="header__button">My Projects /</button>
+      </header>
+      <div id="content">
+        <div class="project-title">
+          <input
+            type="text"
+            id="myTodo"
+            class="title-input"
+            name="myTodo"
+            value="My Todo"
+            required
+          />
+        </div>
+
+        <div class="task-container">
+          <div class="task-item">
+            <div class="task__details">
+              <input type="checkbox" class="task__checkbox" />
+              <p class="task__title">Create add tasks form UI</p>
+            </div>
+
+            <div class="task__options">
+              <button class="task__edit task__option">
+                <img
+                  src="./assets/icons/edit-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+              <button class="task__delete task__option">
+                <img
+                  src="./assets/icons/delete-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+              <button class="task__set-priority task__option">
+                <img
+                  src="./assets/icons/priority-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div class="task-item">
+            <div class="task__details">
+              <input type="checkbox" class="task__checkbox" />
+              <p class="task__title">
+                Add feature that will add tasks to localStorage
+              </p>
+            </div>
+
+            <div class="task__options">
+              <button class="task__edit task__option">
+                <img
+                  src="./assets/icons/edit-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+              <button class="task__delete task__option">
+                <img
+                  src="./assets/icons/delete-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+              <button class="task__set-priority task__option">
+                <img
+                  src="./assets/icons/priority-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div class="task-item">
+            <div class="task__details">
+              <input type="checkbox" class="task__checkbox" />
+              <p class="task__title">
+                Add feature that will delete tasks from localStorage
+              </p>
+            </div>
+
+            <div class="task__options">
+              <button class="task__edit task__option">
+                <img
+                  src="./assets/icons/edit-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+              <button class="task__delete task__option">
+                <img
+                  src="./assets/icons/delete-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+              <button class="task__set-priority task__option">
+                <img
+                  src="./assets/icons/priority-icon.svg"
+                  alt=""
+                  class="task-btn-img"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </body>
 </html>
