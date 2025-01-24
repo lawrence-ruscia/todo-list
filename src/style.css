@@ -215,10 +215,47 @@ input {
 .task__checkbox {
   width: 18px;
   height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
 
-  border-radius: 50%;
+.checkbox__input {
+  display: none;
+}
 
-  outline: none;
+.checkbox__box {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-round);
+  background-color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.checkbox__box::after {
+  content: "";
+  width: 22px;
+  height: 22px;
+  display: none; /* Hidden by default*/
+
+  background-image: url(./assets/icons/check.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: transform 0.2s ease;
+}
+
+.checkbox__box:hover::after {
+  display: block;
+}
+
+.checkbox__input:checked + .checkbox__box::after {
+  display: block; /* Show the checkmark */
 }
 
 .task__options {
