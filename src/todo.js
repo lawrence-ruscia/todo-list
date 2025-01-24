@@ -82,7 +82,14 @@ export class Todo {
       return;
     }
 
+    // Retrieve and update taskOrder
+    const taskOrder = JSON.parse(localStorage.getItem("taskOrder")) ?? [];
+    taskOrder.push(task.id);
+
+    // Save task and taskOrder to localStorage
     localStorage.setItem(task.id, JSON.stringify(task));
+    localStorage.setItem("taskOrder", JSON.stringify(taskOrder));
+
     console.log(`Added task: ${task.name}`);
   }
 
@@ -101,15 +108,8 @@ export class Todo {
     return task;
   }
 
-  getAllLocalStorageItems() {
-    const tasks = {};
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      const value = localStorage.getItem(key);
-      const parsedValue = JSON.parse(value);
-      tasks[key] = parsedValue;
-    }
-
-    return tasks;
+  getAllTasksInOrder() {
+    const taskOrder = JSON.parse(localStorage.getItem("taskOrder")) ?? [];
+    return taskOrder.map((taskID) => this.getTask(taskID));
   }
 }

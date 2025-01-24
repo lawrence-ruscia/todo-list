@@ -80,13 +80,13 @@ export class AddTaskHandler {
   }
 
   #renderTasks() {
-    const tasks = this.#todo.getAllLocalStorageItems();
+    const tasks = this.#todo.getAllTasksInOrder();
     console.log(tasks);
 
-    for (let taskId in tasks) {
-      this.#renderTaskItem(tasks[taskId]);
-      console.log(`Rendered task: ${tasks[taskId].name}`);
-    }
+    tasks.forEach((task) => {
+      this.#renderTaskItem(task);
+      console.log(`Rendered task: ${task.name}`);
+    });
   }
 
   #addTaskToStorage({ name, description, dueDate, priority }) {
