@@ -24,6 +24,7 @@
         </div>
 
         <div class="task-container">
+          <!-- TODO: Replace with lists and use labels for titles to associate them with their checkbox -->
           <div class="task-item">
             <div class="task__details">
               <input type="checkbox" class="task__checkbox" />
@@ -130,9 +131,67 @@
               />
               <p class="add-task__text">Add task</p>
             </button>
+
+            <dialog class="add-task__popover">
+              <form method="dialog" id="add-task__form">
+                <div class="task-form__content">
+                  <div class="task-form__text">
+                    <input
+                      type="text"
+                      class="task-form__title"
+                      placeholder="Title"
+                      name="title"
+                      required
+                    />
+                    <input
+                      type="text"
+                      class="task-form__description"
+                      placeholder="Description"
+                      name="description"
+                    />
+                  </div>
+
+                  <div class="task-form__select">
+                    <input type="date" class="task-form__date" name="date" />
+                    <select
+                      name="priority"
+                      id="priority"
+                      class="task-form__priority"
+                    >
+                      <option value="none" selected disabled hidden>
+                        Priority
+                      </option>
+                      <option value="Priority 1">Priority 1</option>
+                      <option value="Priority 2">Priority 2</option>
+                      <option value="Priority 3">Priority 3</option>
+                      <option value="Priority 4">Priority 4</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="task-form__footer">
+                  <div class="task-form__options">
+                    <button class="filled-button cancel-add-task">
+                      Cancel
+                    </button>
+                    <button class="cta-button confirm-add-task">
+                      Add task
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </dialog>
           </div>
         </div>
       </div>
     </main>
+
+    <script>
+      const addTaskBtn = document.querySelector(".add-task__btn");
+      const addTaskPopover = document.querySelector(".add-task__popover");
+
+      addTaskBtn.addEventListener("click", () => {
+        addTaskPopover.show();
+      });
+    </script>
   </body>
 </html>
