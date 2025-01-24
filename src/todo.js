@@ -9,7 +9,7 @@ export class Task {
     this.#id = crypto.randomUUID(); // Generate UUID
     this.#name = this.#validateName(name);
     this.#description = this.#validateDescription(description);
-    this.#dueDate = this.#validateDueDate(dueDate);
+    this.#dueDate = this.#validateDueDate(new Date(dueDate));
     this.#priority = this.#validatePriority(priority);
   }
 
@@ -47,7 +47,15 @@ export class Task {
   }
 
   #validateDueDate(date) {
-    return date ?? new Date();
+    if (!date || isNaN(date.getTime())) {
+      date = new Date(Date.now());
+    }
+
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dd = String(date.getDate()).padStart(2, "0");
+
+    return `${yyyy}-${mm}-${dd}`;
   }
 
   #validatePriority(priority) {

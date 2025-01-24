@@ -49,6 +49,7 @@ export class AddTaskHandler {
       this.#DOMElements.taskForm.dispatchEvent(closeEvent);
     });
 
+    // BUG: Form submits even though name is empty, which causes an error
     // Handle Enter keypress
     this.#DOMElements.taskForm.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
