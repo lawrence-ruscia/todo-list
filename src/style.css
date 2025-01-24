@@ -287,13 +287,17 @@ input {
   padding: 0;
 }
 
-.add-task__icon {
-  width: 28px;
-  height: auto;
+.add-task-icon {
+  border-radius: 50%;
+}
+
+.add-task__btn:hover .add-task-icon {
+  background-color: var(--color-cta);
+  fill: #ffffff;
 }
 
 .add-task__btn:hover .add-task__text {
-  color: var(--color-text-secondary);
+  color: var(--color-cta);
 }
 
 .add-task__text {

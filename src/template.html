@@ -132,11 +132,28 @@
 
           <div class="add-task">
             <button class="add-task__btn">
-              <img
-                src="./assets/icons/plus-icon.svg"
-                alt=""
-                class="add-task__icon"
-              />
+              <svg
+                class="add-task-icon"
+                width="24px"
+                height="24px"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="#de4c4a"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+
+                <g id="SVGRepo_iconCarrier">
+                  <path d="M6 12h6V6h1v6h6v1h-6v6h-1v-6H6z" />
+
+                  <path fill="none" d="M0 0h24v24H0z" />
+                </g>
+              </svg>
               <p class="add-task__text">Add task</p>
             </button>
 
@@ -176,6 +193,7 @@
                     </select>
                   </div>
                 </div>
+
                 <div class="task-form__footer">
                   <div class="task-form__options">
                     <button class="filled-button cancel-add-task">
@@ -196,9 +214,20 @@
     <script>
       const addTaskBtn = document.querySelector(".add-task__btn");
       const addTaskPopover = document.querySelector(".add-task__popover");
+      const confirmTask = document.querySelector(".confirm-add-task");
+      const cancelTask = document.querySelector(".cancel-add-task");
 
       addTaskBtn.addEventListener("click", () => {
         addTaskPopover.show();
+      });
+
+      confirmTask.addEventListener("click", (e) => {
+        // TODO: add logic for sending form data
+      });
+
+      cancelTask.addEventListener("click", (e) => {
+        e.preventDefault();
+        addTaskPopover.close();
       });
     </script>
   </body>
