@@ -264,11 +264,16 @@ input {
   gap: var(--spacing-sm);
 }
 
-.task__option {
+.task__edit {
   background-color: inherit;
   border: 0;
-  width: 28px;
-  padding: 0;
+  width: 30px;
+  padding: 2px;
+
+  border-radius: var(--radius-x-small);
+}
+.task__edit:hover {
+  background-color: var(--color-btn-hover);
 }
 
 .add-task {
