@@ -259,6 +259,10 @@ input {
   display: block; /* Show the checkmark */
 }
 
+.checkbox__input:not(:checked) + .checkbox__box::after {
+  display: none;
+}
+
 .task__options {
   display: flex;
   gap: var(--spacing-sm);

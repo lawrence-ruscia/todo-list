@@ -1,4 +1,4 @@
-class Task {
+export class Task {
   #id;
   #name;
   #description;
@@ -95,27 +95,16 @@ export class Todo {
     console.log(`Retrieved task ${task.name}`);
     return task;
   }
+
+  getAllLocalStorageItems() {
+    const tasks = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const value = localStorage.getItem(key);
+      const parsedValue = JSON.parse(value);
+      tasks[key] = parsedValue;
+    }
+
+    return tasks;
+  }
 }
-
-// TEST
-const task1 = new Task({
-  name: "myTask",
-  description: undefined,
-  dueDate: new Date("2022-05-21"),
-  priority: "P3",
-});
-
-const task2 = new Task({
-  name: "myTask",
-  description: undefined,
-  dueDate: new Date("2022-05-21"),
-  priority: "P3",
-});
-const todo = new Todo();
-
-todo.addTask(task1);
-
-const task1Data = todo.getTask(task1.id);
-
-console.log(JSON.stringify(task1Data));
-console.log(JSON.stringify(task1));

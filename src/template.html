@@ -24,70 +24,6 @@
         </div>
 
         <ul class="task-container">
-          <li class="task-item">
-            <div class="task__details">
-              <label class="task-checkbox">
-                <input type="checkbox" class="checkbox__input" />
-                <span class="checkbox__box"></span>
-              </label>
-              <p class="task__title">
-                Add feature that will delete tasks from localStorage
-              </p>
-            </div>
-
-            <div class="task__options">
-              <button class="task__edit">
-                <img
-                  src="./assets/icons/edit-icon.svg"
-                  alt=""
-                  class="task-btn-img btn-icon"
-                />
-              </button>
-            </div>
-          </li>
-
-          <li class="task-item">
-            <div class="task__details">
-              <label class="task-checkbox">
-                <input type="checkbox" class="checkbox__input" />
-                <span class="checkbox__box"></span>
-              </label>
-              <p class="task__title">Create add tasks form UI</p>
-            </div>
-
-            <div class="task__options">
-              <button class="task__edit">
-                <img
-                  src="./assets/icons/edit-icon.svg"
-                  alt=""
-                  class="task-btn-img btn-icon"
-                />
-              </button>
-            </div>
-          </li>
-
-          <li class="task-item">
-            <div class="task__details">
-              <label class="task-checkbox">
-                <input type="checkbox" class="checkbox__input" />
-                <span class="checkbox__box"></span>
-              </label>
-              <p class="task__title">
-                Add feature that will add tasks to localStorage
-              </p>
-            </div>
-
-            <div class="task__options">
-              <button class="task__edit">
-                <img
-                  src="./assets/icons/edit-icon.svg"
-                  alt=""
-                  class="task-btn-img btn-icon"
-                />
-              </button>
-            </div>
-          </li>
-
           <div class="add-task">
             <button class="add-task__btn">
               <svg
@@ -125,12 +61,14 @@
                       placeholder="Title"
                       name="title"
                       required
+                      autocomplete="off"
                     />
                     <input
                       type="text"
                       class="task-form__description"
                       placeholder="Description"
                       name="description"
+                      autocomplete="off"
                     />
                   </div>
 
@@ -141,13 +79,10 @@
                       id="priority"
                       class="task-form__priority"
                     >
-                      <option value="none" selected disabled hidden>
-                        Priority
-                      </option>
-                      <option value="Priority 1">Priority 1</option>
-                      <option value="Priority 2">Priority 2</option>
-                      <option value="Priority 3">Priority 3</option>
-                      <option value="Priority 4">Priority 4</option>
+                      <option value="P1" selected>Priority 1</option>
+                      <option value="P2">Priority 2</option>
+                      <option value="P3">Priority 3</option>
+                      <option value="P4">Priority 4</option>
                     </select>
                   </div>
                 </div>
