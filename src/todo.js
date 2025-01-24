@@ -90,7 +90,12 @@ export class Todo {
     const taskData = JSON.parse(localStorage.getItem(taskID));
 
     // Rehydrate to preserve Task instance
-    const task = new Task(taskData);
+    const task = new Task({
+      name: taskData.name,
+      description: taskData.description,
+      dueDate: taskData.dueDate,
+      priority: taskData.priority,
+    });
 
     console.log(`Retrieved task ${task.name}`);
     return task;
