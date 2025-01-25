@@ -6,7 +6,9 @@ export class AddTaskHandler {
   #DOMElements = {
     taskPopover: document.querySelector(".add-task__popover"),
     taskForm: document.querySelector("#add-task__form"),
+    taskFormTitle: document.querySelector(".task-form__title"),
     addTaskBtn: document.querySelector(".add-task__btn"),
+    confirmAddTaskBtn: document.querySelector(".confirm-add-task"),
     cancelTaskBtn: document.querySelector(".cancel-add-task"),
   };
 
@@ -23,6 +25,7 @@ export class AddTaskHandler {
     this.#handleTaskPopover();
     this.#handleTaskForm();
     this.#handleTaskButtons();
+    this.#handleInvalidInputs();
   }
 
   #handleTaskForm() {
@@ -60,6 +63,7 @@ export class AddTaskHandler {
 
   #handleTaskButtons() {
     this.#DOMElements.addTaskBtn.addEventListener("click", () => {
+      this.#validateInput();
       this.#DOMElements.taskPopover.show();
     });
 
@@ -67,6 +71,19 @@ export class AddTaskHandler {
       e.preventDefault();
       this.#DOMElements.taskPopover.close();
     });
+  }
+
+  #handleInvalidInputs() {
+    this.#DOMElements.taskFormTitle.addEventListener("input", () => {
+      this.#DOMElements.confirmAddTaskBtn.disabled =
+        !this.#DOMElements.taskFormTitle.checkValidity();
+    });
+  }
+
+  // HACK: Duplicate code with the handleInvalidInputs, provide a better solution
+  #validateInput() {
+    this.#DOMElements.confirmAddTaskBtn.disabled =
+      !this.#DOMElements.taskFormTitle.checkValidity();
   }
 
   #renderTasks() {
@@ -112,7 +129,6 @@ export class AddTaskHandler {
     });
     const input = this.#domHandler.createInput({
       type: "checkbox",
-      required: true,
       classNames: ["checkbox__input"],
     });
     const box = this.#domHandler.createSpan({ classNames: ["checkbox__box"] });

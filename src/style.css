@@ -19,6 +19,8 @@
   --color-delete: #ff7f74;
   --color-cta: #de4c4a;
   --color-cta-hover: #da6d6b;
+  --color-cta-disabled: #de4c4a41;
+  --color-cta-disabled-text: #ffffff94;
   --color-text-secondary: #f07f75;
   --color-menu-hover: #de8d4a1f;
   --color-btn-hover: #cccccc31;
@@ -118,6 +120,16 @@ input {
 
 .cta-button:hover {
   background-color: var(--color-cta-hover);
+}
+
+.cta-button:disabled {
+  background-color: var(--color-cta-disabled);
+  color: var(--color-cta-disabled-text);
+}
+
+.cta-button:enabled {
+  background-color: var(--color-cta);
+  color: var(--color-text-primary);
 }
 
 .filled-button {
