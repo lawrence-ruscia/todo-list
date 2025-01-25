@@ -5,8 +5,8 @@ export class Task {
   #dueDate;
   #priority;
 
-  constructor({ name, description, dueDate, priority } = {}) {
-    this.#id = crypto.randomUUID(); // Generate UUID
+  constructor({ id, name, description, dueDate, priority } = {}) {
+    this.#id = id ?? crypto.randomUUID(); // Generate UUID if there isn't one already set
     this.#name = this.#validateName(name);
     this.#description = this.#validateDescription(description);
     this.#dueDate = this.#validateDueDate(new Date(dueDate));
@@ -98,22 +98,42 @@ export class Todo {
     localStorage.setItem(task.id, JSON.stringify(task));
     localStorage.setItem("taskOrder", JSON.stringify(taskOrder));
 
-    console.log(`Added task: ${task.name}`);
+    console.log(`Added task: ${task.id}`);
   }
 
   getTask(taskID) {
-    const taskData = JSON.parse(localStorage.getItem(taskID));
+    const task = JSON.parse(localStorage.getItem(taskID));
 
-    // Rehydrate to preserve Task instance
-    const task = new Task({
-      name: taskData.name,
-      description: taskData.description,
-      dueDate: taskData.dueDate,
-      priority: taskData.priority,
-    });
+    if (!task || !task.id) {
+      throw new Error(`Task with ID ${taskID} not found in localStorage.`);
+    }
 
     console.log(`Retrieved task ${task.name}`);
     return task;
+  }
+
+  deleteTask(task) {
+    const taskID = task.id;
+    if (!taskID) throw new Error(`Invalid Task ID: ${JSON.stringify(taskID)}`);
+
+    if (!localStorage.getItem(taskID)) {
+      throw new Error(`Task with id ${taskID} does not exist.`);
+    }
+    // Retrieve and update taskOrder
+    const taskOrder = JSON.parse(localStorage.getItem("taskOrder")) ?? [];
+    const taskIndex = taskOrder.indexOf(taskID);
+
+    if (taskIndex === -1) {
+      throw new Error(`Task with ID ${taskID} is not in the task order.`);
+    }
+    // Remove task from localStorage
+    localStorage.removeItem(taskID);
+
+    // Remove task ID from taskOrder
+    taskOrder.splice(taskIndex, 1);
+    localStorage.setItem("taskOrder", JSON.stringify(taskOrder));
+
+    console.log(`Removed task: ${taskID}`);
   }
 
   getAllTasksInOrder() {
@@ -121,3 +141,19 @@ export class Todo {
     return taskOrder.map((taskID) => this.getTask(taskID));
   }
 }
+
+// TEST
+const task1 = new Task({
+  name: "myTask",
+  priority: "P1",
+});
+
+const task2 = new Task({
+  name: "newTask",
+  priority: "P1",
+});
+
+const todo = new Todo();
+todo.addTask(task1);
+todo.addTask(task2);
+todo.deleteTask(task2);
