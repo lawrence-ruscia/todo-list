@@ -154,6 +154,3 @@ const task2 = new Task({
 });
 
 const todo = new Todo();
-todo.addTask(task1);
-todo.addTask(task2);
-todo.deleteTask(task2);

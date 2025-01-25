@@ -2,7 +2,36 @@ import { Task, Todo } from "./todo";
 import { DOMHandler } from "./dom-handler";
 import editIcon from "./assets/icons/edit-icon.svg";
 
-export class AddTaskHandler {
+// Abstract class
+class UIHandler {
+  constructor() {
+    if (new.target === UIHandler) {
+      throw new Error("Cannot instantiate an abstract class directly.");
+    }
+  }
+
+  // Abstract method
+  render() {
+    throw new Error("`render()` method must be implemented by subclass.");
+  }
+}
+
+export class TaskUIHandler extends UIHandler {
+  #components = {
+    taskItem: new TaskItemHandler(),
+    popover: new PopoverHandler(),
+  };
+
+  render() {
+    this.#components.popover.render();
+  }
+}
+
+class TaskItemHandler {
+  render() {}
+}
+
+class PopoverHandler extends UIHandler {
   #DOMElements = {
     taskPopover: document.querySelector(".add-task__popover"),
     taskForm: document.querySelector("#add-task__form"),
@@ -16,11 +45,12 @@ export class AddTaskHandler {
   #todo;
 
   constructor() {
+    super();
     this.#domHandler = new DOMHandler();
     this.#todo = new Todo();
   }
 
-  renderModal() {
+  render() {
     this.#renderTasks();
     this.#handleTaskPopover();
     this.#handleTaskForm();
