@@ -16,7 +16,7 @@ class UIHandler {
   }
 }
 
-export class TaskUIHandler extends UIHandler {
+export class TodoUIHandler extends UIHandler {
   #components = {
     taskItem: new TaskItemHandler(),
     popover: new PopoverHandler(),

@@ -1,8 +1,8 @@
 import "./style.css";
 import "./normalize.css";
 
-import { TaskUIHandler } from "./todo-ui";
+import { TodoUIHandler } from "./todo-ui";
 import { Todo } from "./todo";
 
-const taskUI = new TaskUIHandler().render();
+const todoUI = new TodoUIHandler().render();
 const todo = new Todo();
