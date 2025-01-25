@@ -40,25 +40,14 @@ export class AddTaskHandler {
       this.#addTaskToStorage(task);
       this.#renderTaskItem(task);
 
-      // Close and reset form
-      const closeEvent = new Event("close", {
-        bubbles: true,
-        cancelable: true,
-      });
-
-      this.#DOMElements.taskForm.dispatchEvent(closeEvent);
+      this.#DOMElements.taskPopover.close();
     });
 
-    // BUG: Form submits even though name is empty, which causes an error
     // Handle Enter keypress
     this.#DOMElements.taskForm.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
-        console.log("enter was clicked!");
-        const submitEvent = new Event("submit", {
-          bubbles: true,
-          cancelable: true,
-        });
-        this.#DOMElements.taskForm.dispatchEvent(submitEvent);
+        e.preventDefault();
+        this.#DOMElements.taskForm.requestSubmit();
       }
     });
   }
@@ -123,6 +112,7 @@ export class AddTaskHandler {
     });
     const input = this.#domHandler.createInput({
       type: "checkbox",
+      required: true,
       classNames: ["checkbox__input"],
     });
     const box = this.#domHandler.createSpan({ classNames: ["checkbox__box"] });
