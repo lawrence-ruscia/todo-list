@@ -23,12 +23,102 @@ export class TodoUIHandler extends UIHandler {
   };
 
   render() {
+    this.#components.taskItem.render();
     this.#components.popover.render();
   }
 }
 
 class TaskItemHandler {
-  render() {}
+  #DOMElements = {
+    taskContainer: document.querySelector(".task-container"),
+    modal: document.querySelector(".task-item__modal"),
+    itemForm: document.querySelector("#item-form"),
+    todo: new Todo(),
+  };
+
+  render() {
+    this.#handleItemClick();
+    this.#handleModal();
+    this.#renderItemDetails();
+  }
+
+  #handleItemClick() {
+    const taskContainer = this.#DOMElements.taskContainer;
+    const modal = this.#DOMElements.modal;
+
+    taskContainer.addEventListener("click", (e) => {
+      const taskItem = e.target;
+      if (taskItem.classList.contains("task-item")) {
+        modal.showModal();
+      }
+    });
+  }
+
+  #handleModal() {
+    // Handle close btn click
+    const handleCloseBtn = (() => {
+      document
+        .querySelector(".modal__close-btn")
+        .addEventListener("click", () => {
+          this.#DOMElements.modal.close();
+        });
+    })();
+
+    const handleFormActions = (() => {
+      const form = this.#DOMElements.itemForm;
+      const actions = document.querySelector(".item-form__actions");
+      const text = document.querySelector(".item-form__text");
+
+      form.addEventListener("focusin", (e) => {
+        const input = e.target;
+        if (input.tagName === "INPUT") {
+          actions.style.display = "flex";
+          text.classList.add("item-form__text--focus");
+        }
+      });
+
+      form.addEventListener("click", (e) => {
+        e.preventDefault();
+        const button = e.target;
+
+        if (button.classList.contains("item-form__cancel")) {
+          actions.style.display = "none";
+          text.classList.remove("item-form__text--focus");
+        }
+
+        if (button.classList.contains("item-form__save")) {
+          // TODO: Create logic for modifying/editing tasks
+        }
+      });
+    })();
+  }
+
+  #renderItemDetails() {
+    const container = this.#DOMElements.taskContainer;
+    container.addEventListener("click", (e) => {
+      const taskItem = e.target;
+
+      // Determine which task item div was clicked
+      if (taskItem.classList.contains("task-item")) {
+        // Get task ID and retrieve task obj
+        const taskId = taskItem.dataset.taskId;
+        const task = this.#DOMElements.todo.getTask(taskId);
+
+        // Render task data on input fields
+        const titleInput = document.querySelector(".item-form__title");
+        const descriptionInput = document.querySelector(
+          ".item-form__description"
+        );
+        const dueDateInput = document.querySelector(".item-form__date");
+        const priorityInput = document.querySelector(".item-form__priority");
+
+        titleInput.value = task.name;
+        descriptionInput.value = task.description;
+        dueDateInput.value = task.dueDate;
+        priorityInput.value = task.priority;
+      }
+    });
+  }
 }
 
 class PopoverHandler extends UIHandler {
@@ -126,23 +216,25 @@ class PopoverHandler extends UIHandler {
     });
   }
 
-  #addTaskToStorage({ name, description, dueDate, priority }) {
-    const task = new Task({ name, description, dueDate, priority });
+  #addTaskToStorage(task) {
     this.#todo.addTask(task);
   }
 
-  #renderTaskItem({ name }) {
+  #renderTaskItem(task) {
     const taskContainer = document.querySelector(".task-container");
-    const taskItem = this.#createTaskItem(name);
+    const taskItem = this.#createTaskItem(task);
     taskContainer.insertBefore(taskItem, taskContainer.lastElementChild);
   }
 
-  #createTaskItem(name) {
+  #createTaskItem(task) {
     const taskItem = this.#domHandler.createListItem({
       classNames: ["task-item"],
     });
 
-    const details = this.#createTaskDetails(name);
+    // Assign data attr for later retrieval
+    taskItem.dataset.taskId = task.id;
+
+    const details = this.#createTaskDetails(task.name);
     const options = this.#createTaskOptions();
 
     taskItem.append(details, options);
@@ -161,7 +253,9 @@ class PopoverHandler extends UIHandler {
       type: "checkbox",
       classNames: ["checkbox__input"],
     });
-    const box = this.#domHandler.createSpan({ classNames: ["checkbox__box"] });
+    const box = this.#domHandler.createSpan({
+      classNames: ["checkbox__box", "task-checkbox__box"],
+    });
     const title = this.#domHandler.createPara({
       textContent: name,
       classNames: ["task__title"],

@@ -79,10 +79,10 @@
                       id="priority"
                       class="task-form__priority"
                     >
-                      <option value="P1" selected>Priority 1</option>
+                      <option value="P1">Priority 1</option>
                       <option value="P2">Priority 2</option>
                       <option value="P3">Priority 3</option>
-                      <option value="P4">Priority 4</option>
+                      <option value="P4" selected>Priority 4</option>
                     </select>
                   </div>
                 </div>
@@ -103,5 +103,82 @@
         </ul>
       </div>
     </main>
+
+    <!-- Task Item Modal Start -->
+    <dialog class="task-item__modal">
+      <div class="modal__header">
+        <button class="modal__project-btn"># My Todo</button>
+        <button class="modal__close-btn">
+          <img class="close-icon" src="./assets/icons/close-icon.svg" alt="" />
+        </button>
+      </div>
+      <div class="modal__content">
+        <div class="modal__details">
+          <form method="dialog" id="item-form">
+            <div class="item-form__content">
+              <label class="checkbox">
+                <input type="checkbox" class="checkbox__input" />
+                <span class="checkbox__box modal-checkbox__box"></span>
+              </label>
+              <div class="item-form__text">
+                <input
+                  type="text"
+                  class="item-form__title"
+                  placeholder="Title"
+                  name="title"
+                  required=""
+                  autocomplete="off"
+                />
+                <input
+                  type="text"
+                  class="item-form__description"
+                  placeholder="Description"
+                  name="description"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="item-form__actions">
+              <button class="item-form__cancel button--large filled-button">
+                Cancel
+              </button>
+              <button class="item-form__save button--large cta-button">
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="modal__options">
+          <form method="dialog" id="optionsForm">
+            <div class="options-group">
+              <label for="optionDate" class="options-label">Date</label>
+              <input
+                type="date"
+                id="optionDate"
+                class="item-form__date item-form__input"
+              />
+            </div>
+            <div class="options-group">
+              <label for="optionPriority" class="options-label">Priority</label>
+              <select
+                name="priority"
+                id="optionPriority"
+                class="item-form__priority item-form__input"
+              >
+                <option value="P1">Priority 1</option>
+                <option value="P2">Priority 2</option>
+                <option value="P3">Priority 3</option>
+                <option value="P4">Priority 4</option>
+              </select>
+            </div>
+            <button class="options__delete">
+              <img src="./assets/icons/delete-icon.svg" alt="" />
+              Delete
+            </button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+    <!-- Task Item Modal End -->
   </body>
 </html>
