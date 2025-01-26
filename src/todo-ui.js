@@ -64,7 +64,7 @@ class TaskItemHandler {
         });
     })();
 
-    const handleFormActions = (() => {
+    const handleFormDetailActions = (() => {
       const form = this.#DOMElements.itemForm;
       const actions = document.querySelector(".item-form__actions");
       const text = document.querySelector(".item-form__text");
@@ -102,6 +102,7 @@ class TaskItemHandler {
       if (taskItem.classList.contains("task-item")) {
         // Get task ID and retrieve task obj
         const taskId = taskItem.dataset.taskId;
+        console.log(`Task selected: ${taskId}`);
         const task = this.#DOMElements.todo.getTask(taskId);
 
         // Render task data on input fields
@@ -116,7 +117,28 @@ class TaskItemHandler {
         descriptionInput.value = task.description;
         dueDateInput.value = task.dueDate;
         priorityInput.value = task.priority;
+
+        this.#handleDeleteClick(task);
       }
+    });
+  }
+
+  #handleDeleteClick(task) {
+    const deleteBtn = document.querySelector(".options__delete");
+    const todo = this.#DOMElements.todo;
+    const popover = new PopoverHandler();
+
+    const newDeleteBtn = deleteBtn.cloneNode(true);
+    deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+
+    newDeleteBtn.addEventListener("click", (e) => {
+      // Delete from DOM
+      popover.deleteTaskItem(task.id);
+
+      // Delete from localStorage
+      todo.deleteTask(task);
+
+      this.#DOMElements.modal.close();
     });
   }
 }
@@ -224,6 +246,16 @@ class PopoverHandler extends UIHandler {
     const taskContainer = document.querySelector(".task-container");
     const taskItem = this.#createTaskItem(task);
     taskContainer.insertBefore(taskItem, taskContainer.lastElementChild);
+  }
+
+  deleteTaskItem(taskId) {
+    const taskItems = document.querySelectorAll(".task-item");
+
+    taskItems.forEach((taskItem) => {
+      if (taskItem.dataset.taskId === taskId) {
+        taskItem.remove();
+      }
+    });
   }
 
   #createTaskItem(task) {
