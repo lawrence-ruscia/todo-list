@@ -292,16 +292,6 @@ input[type="text"] {
   padding: var(--spacing-sm);
 }
 
-.modal-checkbox__box {
-  width: 24px;
-  height: 24px;
-}
-
-.modal-checkbox__box::after {
-  width: 24px;
-  height: 24px;
-}
-
 /* Task Item Details Form */
 #item-form {
   display: flex;
@@ -370,11 +360,14 @@ input[type="text"] {
   gap: var(--spacing-xs);
 }
 
+/* Custom Checkbox */
 .checkbox__input {
-  display: none;
-}
+  appearance: none;
+  -webkit-appearance: none;
 
-.checkbox__box {
+  width: 24px;
+  height: 24px;
+
   border: 1px solid var(--color-outline);
   border-radius: var(--radius-round);
   background-color: var(--color-primary);
@@ -382,28 +375,32 @@ input[type="text"] {
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s ease, border-color 0.3s ease;
-  cursor: pointer;
 }
 
-.checkbox__box::after {
+/* Checkbox mark styling */
+.checkbox__input::after {
   content: "";
+  width: 24px;
+  height: 24px;
 
-  display: none; /* Hidden by default*/
-
+  display: none; /* Initially hidden */
   background-image: url(./assets/icons/check.svg);
   background-size: cover;
   background-repeat: no-repeat;
   transition: transform 0.2s ease;
 }
 
-.task-checkbox__box {
-  width: 22px;
-  height: 22px;
+/* BUG: Hover not appearing */
+.checkbox__input:hover::after {
+  display: block; /* Show the checkmark */
 }
 
-.task-checkbox__box::after {
-  width: 22px;
-  height: 22px;
+.checkbox__input:checked::after {
+  display: block;
+}
+
+.checkbox__input:not(:checked)::after {
+  display: none;
 }
 
 /* Modal Options Section */
@@ -474,19 +471,6 @@ input[type="text"] {
 
 .options__delete:hover {
   background-color: var(--color-option-hover);
-}
-
-/* BUG: Hover not appearing */
-.checkbox__box:hover::after {
-  display: block;
-}
-
-.checkbox__input:checked + .checkbox__box::after {
-  display: block; /* Show the checkmark */
-}
-
-.checkbox__input:not(:checked) + .checkbox__box::after {
-  display: none;
 }
 
 .task__options {

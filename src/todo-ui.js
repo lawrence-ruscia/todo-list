@@ -78,7 +78,6 @@ class TaskItemHandler {
       });
 
       form.addEventListener("click", (e) => {
-        e.preventDefault();
         const button = e.target;
 
         if (button.classList.contains("item-form__cancel")) {
@@ -279,14 +278,14 @@ class PopoverHandler extends UIHandler {
       classNames: ["task__details"],
     });
     const label = this.#domHandler.createLabel({
-      classNames: ["task-checkbox"],
+      classNames: ["checkbox"],
     });
     const input = this.#domHandler.createInput({
       type: "checkbox",
       classNames: ["checkbox__input"],
     });
     const box = this.#domHandler.createSpan({
-      classNames: ["checkbox__box", "task-checkbox__box"],
+      classNames: ["checkbox__box"],
     });
     const title = this.#domHandler.createPara({
       textContent: name,
