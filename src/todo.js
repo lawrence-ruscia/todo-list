@@ -86,7 +86,7 @@ export class Todo {
       throw new Error(`Invalid Task ${JSON.stringify(task)}`);
 
     if (localStorage.getItem(task.id)) {
-      console.warn(`Task with ID ${task.id} already exists.`);
+      console.warn(`Task with task Id ${task.id} already exists.`);
       return;
     }
 
@@ -140,6 +140,29 @@ export class Todo {
     const taskOrder = JSON.parse(localStorage.getItem("taskOrder")) ?? [];
     return taskOrder.map((taskID) => this.getTask(taskID));
   }
+
+  editTask(taskId, updatedTask) {
+    if (!taskId) throw new Error(`Invalid Task ID: ${JSON.stringify(taskId)}`);
+
+    if (!updatedTask || !updatedTask.id || !updatedTask.name)
+      throw new Error(`Invalid Task ${JSON.stringify(task)}`);
+
+    if (!localStorage.getItem(taskId)) {
+      throw new Error(`Task with id ${taskId} does not exist.`);
+    }
+
+    // Rehydrate the updated task while preserving the original task ID
+    const modifiedTask = new Task({
+      id: taskId,
+      name: updatedTask.name,
+      description: updatedTask.description,
+      dueDate: updatedTask.dueDate,
+      priority: updatedTask.priority,
+    });
+
+    localStorage.setItem(taskId, JSON.stringify(modifiedTask));
+    console.log(`Updated task: ${taskId}`);
+  }
 }
 
 // TEST
@@ -154,3 +177,7 @@ const task2 = new Task({
 });
 
 const todo = new Todo();
+// todo.addTask(task1);
+// console.log(`Task name: ${task1.name}`);
+
+// todo.editTask(task1.id, task2);
