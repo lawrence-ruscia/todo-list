@@ -32,7 +32,13 @@ class TaskItemHandler {
   #DOMElements = {
     taskContainer: document.querySelector(".task-container"),
     modal: document.querySelector(".task-item__modal"),
+    modalDetails: document.querySelector(".modal__details"),
     itemForm: document.querySelector("#item-form"),
+    titleInput: document.querySelector(".item-form__title"),
+    descriptionInput: document.querySelector(".item-form__description"),
+    dueDateInput: document.querySelector(".item-form__date"),
+    priorityInput: document.querySelector(".item-form__priority"),
+
     todo: new Todo(),
   };
 
@@ -105,12 +111,10 @@ class TaskItemHandler {
         const task = this.#DOMElements.todo.getTask(taskId);
 
         // Render task data on input fields
-        const titleInput = document.querySelector(".item-form__title");
-        const descriptionInput = document.querySelector(
-          ".item-form__description"
-        );
-        const dueDateInput = document.querySelector(".item-form__date");
-        const priorityInput = document.querySelector(".item-form__priority");
+        const titleInput = this.#DOMElements.titleInput;
+        const descriptionInput = this.#DOMElements.descriptionInput;
+        const dueDateInput = this.#DOMElements.dueDateInput;
+        const priorityInput = this.#DOMElements.priorityInput;
 
         titleInput.value = task.name;
         descriptionInput.value = task.description;
@@ -118,8 +122,43 @@ class TaskItemHandler {
         priorityInput.value = task.priority;
 
         this.#handleDeleteClick(task);
+
+        this.#handleSaveClick(taskId);
       }
     });
+  }
+
+  #handleSaveClick(taskId) {
+    const todo = this.#DOMElements.todo;
+    const popover = new PopoverHandler();
+
+    const modalDetails = this.#DOMElements.modalDetails;
+
+    modalDetails.addEventListener(
+      "submit",
+      (e) => {
+        const form = e.target;
+
+        if (form.id === "item-form" && form.tagName === "FORM") {
+          // Render task data on input fields
+          const titleInput = this.#DOMElements.titleInput;
+          const descriptionInput = this.#DOMElements.descriptionInput;
+          const dueDateInput = this.#DOMElements.dueDateInput;
+          const priorityInput = this.#DOMElements.priorityInput;
+
+          const updatedTask = new Task({
+            name: titleInput.value,
+            description: descriptionInput.value,
+            dueDate: dueDateInput.value,
+            priority: priorityInput.value,
+          });
+
+          todo.editTask(taskId, updatedTask);
+          popover.updateTaskItem(taskId, updatedTask);
+        }
+      },
+      { once: true } // Remove listener after first invocation
+    );
   }
 
   #handleDeleteClick(task) {
@@ -162,7 +201,7 @@ class PopoverHandler extends UIHandler {
   }
 
   render() {
-    this.#renderTasks();
+    this.renderTasks();
     this.#handleTaskPopover();
     this.#handleTaskForm();
     this.#handleTaskButtons();
@@ -227,7 +266,7 @@ class PopoverHandler extends UIHandler {
       !this.#DOMElements.taskFormTitle.checkValidity();
   }
 
-  #renderTasks() {
+  renderTasks() {
     const tasks = this.#todo.getAllTasksInOrder();
     console.log(tasks);
 
@@ -253,6 +292,19 @@ class PopoverHandler extends UIHandler {
     taskItems.forEach((taskItem) => {
       if (taskItem.dataset.taskId === taskId) {
         taskItem.remove();
+      }
+    });
+  }
+
+  updateTaskItem(taskId, updatedTask) {
+    const taskItems = document.querySelectorAll(".task-item");
+
+    taskItems.forEach((taskItem) => {
+      // Locate which task item matches the given ID
+      if (taskItem.dataset.taskId === taskId) {
+        // Modify the task title text content
+        console.log("Task Item Located!");
+        taskItem.querySelector(".task__title").textContent = updatedTask.name;
       }
     });
   }
