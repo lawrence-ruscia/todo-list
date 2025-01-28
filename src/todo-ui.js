@@ -46,6 +46,7 @@ class TaskItemHandler {
     this.#handleItemClick();
     this.#handleModal();
     this.#renderItemDetails();
+    this.#handleSaveClick();
   }
 
   #handleItemClick() {
@@ -90,10 +91,6 @@ class TaskItemHandler {
           actions.style.display = "none";
           text.classList.remove("item-form__text--focus");
         }
-
-        if (button.classList.contains("item-form__save")) {
-          // TODO: Create logic for modifying/editing tasks
-        }
       });
     })();
   }
@@ -123,42 +120,42 @@ class TaskItemHandler {
 
         this.#handleDeleteClick(task);
 
-        this.#handleSaveClick(taskId);
+        // Store task ID in the form's dataset to identify task
+        this.#DOMElements.itemForm.dataset.taskId = taskId;
       }
     });
   }
 
-  #handleSaveClick(taskId) {
+  #handleSaveClick() {
     const todo = this.#DOMElements.todo;
     const popover = new PopoverHandler();
 
-    const modalDetails = this.#DOMElements.modalDetails;
+    const form = this.#DOMElements.itemForm;
 
-    modalDetails.addEventListener(
-      "submit",
-      (e) => {
-        const form = e.target;
+    form.addEventListener("submit", (e) => {
+      // Retrieve task ID from the form's dataset
+      const taskId = form.dataset.taskId;
 
-        if (form.id === "item-form" && form.tagName === "FORM") {
-          // Render task data on input fields
-          const titleInput = this.#DOMElements.titleInput;
-          const descriptionInput = this.#DOMElements.descriptionInput;
-          const dueDateInput = this.#DOMElements.dueDateInput;
-          const priorityInput = this.#DOMElements.priorityInput;
+      // Get updated input values
+      const titleInput = this.#DOMElements.titleInput;
+      const descriptionInput = this.#DOMElements.descriptionInput;
+      const dueDateInput = this.#DOMElements.dueDateInput;
+      const priorityInput = this.#DOMElements.priorityInput;
 
-          const updatedTask = new Task({
-            name: titleInput.value,
-            description: descriptionInput.value,
-            dueDate: dueDateInput.value,
-            priority: priorityInput.value,
-          });
+      const updatedTask = new Task({
+        name: titleInput.value,
+        description: descriptionInput.value,
+        dueDate: dueDateInput.value,
+        priority: priorityInput.value,
+      });
 
-          todo.editTask(taskId, updatedTask);
-          popover.updateTaskItem(taskId, updatedTask);
-        }
-      },
-      { once: true } // Remove listener after first invocation
-    );
+      // Update task in localStorage
+      todo.editTask(taskId, updatedTask);
+
+      // Update task details in the DOM
+      popover.updateTaskItem(taskId, updatedTask);
+      console.log(`Task ${taskId} has been updated.`);
+    });
   }
 
   #handleDeleteClick(task) {
