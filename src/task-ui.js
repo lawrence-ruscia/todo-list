@@ -67,6 +67,7 @@ export class TaskItemHandler {
     })();
   }
 
+  // TODO: Render checkbox data if the task is already done
   #renderItemDetails() {
     const container = this.#DOMElements.taskContainer;
     container.addEventListener("click", (e) => {

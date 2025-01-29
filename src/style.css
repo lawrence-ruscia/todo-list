@@ -21,7 +21,7 @@
   --color-cta-hover: #da6d6b;
   --color-cta-disabled: #de4c4a41;
   --color-cta-disabled-text: #ffffff94;
-  --color-option-hover: #812c2b56;
+  --color-option-hover: #812c2b50;
   --color-text-secondary: #f07f75;
   --color-menu-hover: #de8d4a1a;
   --color-btn-hover: #cccccc18;
@@ -160,6 +160,7 @@ input[type="text"] {
   font-weight: var(--font-weight-bold);
 }
 
+/* Sidebar Styles */
 #sidebar {
   background-color: var(--color-secondary);
   grid-area: sidebar;
@@ -183,6 +184,18 @@ input[type="text"] {
 
 .sidebar__btn:hover {
   background-color: var(--color-menu-hover);
+}
+
+.sidebar__btn--selected {
+  background-color: var(--color-option-hover);
+}
+
+.sidebar__btn--selected:hover {
+  background-color: var(--color-option-hover);
+}
+
+.sidebar__btn--selected button:hover {
+  background-color: var(--color-secondary);
 }
 
 #sidebar__add-task {
@@ -212,9 +225,16 @@ input[type="text"] {
 }
 
 .projects__add {
+  width: 40px;
+  border-radius: var(--radius-x-small);
   background-color: transparent;
 }
 
+.projects__add svg {
+  max-width: 100%;
+}
+
+/* Main Styles */
 #main {
   background-color: var(--color-primary);
   grid-area: main;
