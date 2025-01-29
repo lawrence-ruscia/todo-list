@@ -23,7 +23,7 @@
   --color-cta-disabled-text: #ffffff94;
   --color-option-hover: #812c2b56;
   --color-text-secondary: #f07f75;
-  --color-menu-hover: #de8d4a1f;
+  --color-menu-hover: #de8d4a1a;
   --color-btn-hover: #cccccc18;
   --color-priority-1: #d1453b;
   --color-priority-2: #eb8909;
@@ -163,6 +163,56 @@ input[type="text"] {
 #sidebar {
   background-color: var(--color-secondary);
   grid-area: sidebar;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: var(--spacing-sm);
+}
+
+.sidebar__btn {
+  height: 50px;
+  padding: var(--button-padding-small);
+
+  /* border: 1px solid red; */
+  border-radius: var(--radius-small);
+
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.sidebar__btn:hover {
+  background-color: var(--color-menu-hover);
+}
+
+#sidebar__add-task {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+#sidebar__add-task svg {
+  max-width: 100%;
+  border-radius: var(--radius-round);
+  background-color: var(--color-cta);
+}
+
+#sidebar__add-task p {
+  color: var(--color-text-secondary);
+}
+
+#projects-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: var(--spacing-md);
+
+  cursor: pointer;
+}
+
+.projects__add {
+  background-color: transparent;
 }
 
 #main {

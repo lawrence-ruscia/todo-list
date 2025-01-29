@@ -291,13 +291,13 @@ const task2 = new Task({
   priority: "P2",
 });
 
-const todo = new Todo();
-todo.addTask(task1);
-todo.addTask(task2);
+// const todo = new Todo();
+// todo.addTask(task1);
+// todo.addTask(task2);
 
-const project = new Project({ name: "New project" });
-project.appendTask(task1, task2);
-todo.createProject(project);
+// const project = new Project({ name: "New project" });
+// project.appendTask(task1, task2);
+// todo.createProject(project);
 
-const restoredProject = todo.getProject(project.id);
-console.table(restoredProject);
+// const restoredProject = todo.getProject(project.id);
+// console.table(restoredProject);
