@@ -80,6 +80,51 @@ export class Task {
   }
 }
 
+class Project {
+  #id;
+  #name;
+  #taskList = [];
+
+  constructor(name) {
+    this.#id = crypto.randomUUID();
+    this.#name = name;
+  }
+
+  appendTask(...tasks) {
+    if (!tasks) throw new Error(`Invalid tasks: ${tasks}`);
+
+    this.#taskList.push(...tasks);
+  }
+
+  removeTask(task) {
+    if (!task) throw new Error(`Invalid task: ${task}`);
+
+    const taskIndex = this.#taskList.indexOf(task);
+
+    if (taskIndex === -1)
+      throw new Error(`Task with ID ${task.id} does not exist.`);
+
+    console.log(`Removed task ${task.id} from project ${this.#name}`);
+    this.#taskList.splice(taskIndex, 1);
+  }
+
+  clear() {
+    this.#taskList.length = 0;
+  }
+
+  get id() {
+    return this.#id;
+  }
+
+  get name() {
+    return this.#name;
+  }
+
+  get taskList() {
+    return this.#taskList;
+  }
+}
+
 export class Todo {
   addTask(task) {
     if (!task || !task.id || !task.name)
@@ -173,11 +218,15 @@ const task1 = new Task({
 
 const task2 = new Task({
   name: "newTask",
-  priority: "P1",
+  priority: "P2",
 });
 
 const todo = new Todo();
-// todo.addTask(task1);
-// console.log(`Task name: ${task1.name}`);
+todo.addTask(task1);
+todo.addTask(task2);
 
-// todo.editTask(task1.id, task2);
+const project = new Project("New project");
+project.appendTask(task1, task2);
+console.log(`Project ${project.name} task list: ${project.taskList}`);
+project.removeTask(task1);
+console.log(`Project ${project.name} task list: ${project.taskList}`);
