@@ -1,12 +1,14 @@
 export class Task {
   #id;
+  #projectId;
   #name;
   #description;
   #dueDate;
   #priority;
 
-  constructor({ id, name, description, dueDate, priority } = {}) {
+  constructor({ id, projectId, name, description, dueDate, priority } = {}) {
     this.#id = id ?? crypto.randomUUID(); // Generate UUID if there isn't one already set
+    this.#projectId = projectId; // Reference to the project that contains it
     this.#name = this.#validateName(name);
     this.#description = this.#validateDescription(description);
     this.#dueDate = this.#validateDueDate(new Date(dueDate));
@@ -69,6 +71,7 @@ export class Task {
   }
 
   // Override toJSON() to preserve methods and private properties
+  // Ensures that only serializable properties are stored
   toJSON() {
     return {
       id: this.#id,
@@ -78,28 +81,39 @@ export class Task {
       priority: this.#priority,
     };
   }
+
+  // Rehydrate Task instances from plain JSON objects
+  static fromJSON(json) {
+    return new Task(json);
+  }
 }
 
 class Project {
   #id;
   #name;
-  #taskList = [];
+  #taskList;
 
-  constructor(name) {
-    this.#id = crypto.randomUUID();
+  constructor({ id, name, taskList = [] } = {}) {
+    this.#id = id ?? crypto.randomUUID();
     this.#name = name;
+    this.#taskList = taskList.map(
+      (task) => (task instanceof Task ? task : new Task(task)) // Ensure task instances
+    );
   }
 
   appendTask(...tasks) {
-    if (!tasks) throw new Error(`Invalid tasks: ${tasks}`);
+    tasks.forEach((task) => {
+      if (!(task instanceof Task))
+        throw new Error(`Invalid task: ${JSON.stringify(task)}`);
 
-    this.#taskList.push(...tasks);
+      this.#taskList.push(task);
+    });
   }
 
   removeTask(task) {
     if (!task) throw new Error(`Invalid task: ${task}`);
 
-    const taskIndex = this.#taskList.indexOf(task);
+    const taskIndex = this.#taskList.findIndex((t) => t.id === task.id);
 
     if (taskIndex === -1)
       throw new Error(`Task with ID ${task.id} does not exist.`);
@@ -109,7 +123,7 @@ class Project {
   }
 
   clear() {
-    this.#taskList.length = 0;
+    this.#taskList = [];
   }
 
   get id() {
@@ -122,6 +136,23 @@ class Project {
 
   get taskList() {
     return this.#taskList;
+  }
+
+  // Override toJSON() to preserve methods and private properties
+  toJSON() {
+    return {
+      id: this.#id,
+      name: this.#name,
+      taskList: this.#taskList.map((task) => task.toJSON), // Convert task instances to plain objects
+    };
+  }
+
+  static fromJSON(json) {
+    return new Project({
+      id: json.id,
+      name: json.name,
+      taskList: json.taskList.map((task) => Task.fromJSON(task)), // Rehydrate task instances
+    });
   }
 }
 
@@ -150,7 +181,7 @@ export class Todo {
     const task = JSON.parse(localStorage.getItem(taskID));
 
     if (!task || !task.id) {
-      throw new Error(`Task with ID ${taskID} not found in localStorage.`);
+      throw new Error(`Task with ID ${taskID} was not found in localStorage.`);
     }
 
     console.log(`Retrieved task ${task.name}`);
@@ -208,6 +239,45 @@ export class Todo {
     localStorage.setItem(taskId, JSON.stringify(modifiedTask));
     console.log(`Updated task: ${taskId}`);
   }
+
+  createProject(project) {
+    if (!project || !project.id || !project.name)
+      throw new Error(`Invalid Project ${JSON.stringify(project)}`);
+
+    if (localStorage.getItem(project.id))
+      throw new Error(`Project ${project.name} already exists`);
+
+    const projectOrder = JSON.parse(localStorage.getItem("projectOrder")) ?? [];
+    projectOrder.push(project.id);
+
+    console.table(project);
+
+    // Convert task instances to plain objects
+    const serializedProject = {
+      id: project.id,
+      name: project.name,
+      taskList: project.taskList.map((task) => task.toJSON()),
+    };
+
+    localStorage.setItem(project.id, JSON.stringify(serializedProject));
+    localStorage.setItem("projectOrder", JSON.stringify(projectOrder));
+  }
+
+  getProject(projectId) {
+    const rawProjectData = JSON.parse(localStorage.getItem(projectId));
+    if (!rawProjectData)
+      throw new Error(
+        `Project with ID ${projectId} was not found in localStorage`
+      );
+
+    const rehydratedProject = {
+      id: rawProjectData.id,
+      name: rawProjectData.name,
+      taskList: rawProjectData.taskList.map((task) => Task.fromJSON(task)),
+    };
+
+    return Project.fromJSON(rehydratedProject);
+  }
 }
 
 // TEST
@@ -225,8 +295,9 @@ const todo = new Todo();
 todo.addTask(task1);
 todo.addTask(task2);
 
-const project = new Project("New project");
+const project = new Project({ name: "New project" });
 project.appendTask(task1, task2);
-console.log(`Project ${project.name} task list: ${project.taskList}`);
-project.removeTask(task1);
-console.log(`Project ${project.name} task list: ${project.taskList}`);
+todo.createProject(project);
+
+const restoredProject = todo.getProject(project.id);
+console.table(restoredProject);
