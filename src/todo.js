@@ -19,6 +19,10 @@ export class Task {
     return this.#id;
   }
 
+  get projectId() {
+    return this.#projectId;
+  }
+
   get name() {
     return this.#name;
   }
@@ -88,7 +92,7 @@ export class Task {
   }
 }
 
-class Project {
+export class Project {
   #id;
   #name;
   #taskList;
@@ -217,6 +221,12 @@ export class Todo {
     return taskOrder.map((taskID) => this.getTask(taskID));
   }
 
+  getAllProjectsInOrder() {
+    const projectsOrder =
+      JSON.parse(localStorage.getItem("projectOrder")) ?? [];
+    return projectsOrder.map((projectId) => this.getProject(projectId));
+  }
+
   editTask(taskId, updatedTask) {
     if (!taskId) throw new Error(`Invalid Task ID: ${JSON.stringify(taskId)}`);
 
@@ -281,15 +291,15 @@ export class Todo {
 }
 
 // TEST
-const task1 = new Task({
-  name: "myTask",
-  priority: "P1",
-});
+// const task1 = new Task({
+//   name: "myTask",
+//   priority: "P1",
+// });
 
-const task2 = new Task({
-  name: "newTask",
-  priority: "P2",
-});
+// const task2 = new Task({
+//   name: "newTask",
+//   priority: "P2",
+// });
 
 // const todo = new Todo();
 // todo.addTask(task1);

@@ -1,5 +1,5 @@
 import editIcon from "./assets/icons/edit-icon.svg";
-import { Todo, Task } from "./todo";
+import { Todo, Task, Project } from "./todo";
 import { DOMHandler } from "./dom-handler";
 
 export class PopoverHandler {
@@ -30,8 +30,10 @@ export class PopoverHandler {
 
   setUpEventListeners() {
     this.renderTasks();
+    this.renderProjects();
     this.#handleTaskPopover();
     this.#handleTaskForm();
+    this.#handleProjectsForm();
     this.#handleTaskButtons();
     this.#handleInvalidInputs();
 
@@ -65,6 +67,24 @@ export class PopoverHandler {
     });
   }
 
+  #handleProjectsForm() {
+    this.#DOMElements.projectsForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const projectName = this.#DOMElements.projectName.value;
+
+      const project = new Project({ name: projectName });
+      this.#addProjectToStorage(project);
+      this.#renderProjectItem(project);
+      this.#DOMElements.projectsModal.close();
+    });
+
+    this.#DOMElements.projectsForm.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        this.#DOMElements.projectsForm.requestSubmit();
+      }
+    });
+  }
   #handleTaskPopover() {
     this.#DOMElements.taskPopover.addEventListener("close", () => {
       this.#DOMElements.taskForm.reset();
@@ -132,14 +152,36 @@ export class PopoverHandler {
     });
   }
 
+  renderProjects() {
+    const projects = this.#todo.getAllProjectsInOrder();
+    console.log(projects);
+
+    projects.forEach((project) => {
+      this.#renderProjectItem(project);
+      console.log(`Rendered project: ${project.name}`);
+    });
+  }
+
   #addTaskToStorage(task) {
     this.#todo.addTask(task);
+  }
+
+  #addProjectToStorage(project) {
+    this.#todo.createProject(project);
   }
 
   #renderTaskItem(task) {
     const taskContainer = document.querySelector(".task-container");
     const taskItem = this.#createTaskItem(task);
     taskContainer.insertBefore(taskItem, taskContainer.lastElementChild);
+  }
+
+  #renderProjectItem(project) {
+    const projectList = document.querySelector(".project-list");
+    const projectItem = this.#createProjectItem(project);
+    projectItem.dataset.projectId = project.id;
+
+    projectList.append(projectItem);
   }
 
   deleteTaskItem(taskId) {
@@ -179,6 +221,20 @@ export class PopoverHandler {
     taskItem.append(details, options);
 
     return taskItem;
+  }
+
+  #createProjectItem(project) {
+    const projectItem = this.#domHandler.createListItem({
+      classNames: ["project-item", "sidebar__btn", "page-button"],
+    });
+    const projectTitle = this.#domHandler.createPara({
+      textContent: `# ${project.name}`,
+      classNames: ["project-item__title"],
+    });
+
+    projectItem.append(projectTitle);
+
+    return projectItem;
   }
 
   #createTaskDetails(name) {

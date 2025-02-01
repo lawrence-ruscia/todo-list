@@ -1,15 +1,18 @@
 import { TaskItemHandler } from "./task-ui";
 import { PopoverHandler } from "./popover-ui";
+import { ProjectsUIHandler } from "./projects-ui";
 
 export class TodoUIHandler {
   #components = {
     taskUI: new TaskItemHandler(),
+    projectUI: new ProjectsUIHandler(),
     popover: new PopoverHandler(),
     sidebarHandler: new SidebarHandler(),
   };
 
   setUpPageEventListeners() {
     this.#components.taskUI.setUpEventListeners();
+    this.#components.projectUI.setUpEventListeners();
     this.#components.popover.setUpEventListeners();
     this.#components.sidebarHandler.setUpEventListeners();
   }

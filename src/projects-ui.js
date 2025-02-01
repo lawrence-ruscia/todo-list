@@ -1,13 +1,16 @@
 import { DOMHandler } from "./dom-handler";
+import { PopoverHandler } from "./popover-ui";
+import { Todo, Task, Project } from "./todo";
+
 export class ProjectsUIHandler {
   #domHandler = new DOMHandler();
   #DOMElements;
-
+  #popoverHandler;
   #title;
 
   constructor(title) {
     this.#title = title;
-
+    this.#popoverHandler = new PopoverHandler();
     this.#DOMElements = {
       projects: this.#domHandler.createDiv({ id: "project" }),
       title: this.#createProjectTitle(),
@@ -20,16 +23,19 @@ export class ProjectsUIHandler {
     return this.#title;
   }
 
+  setUpEventListeners() {}
+
   render() {
-    const {
-      projects: projects,
-      title,
-      addTask,
-      taskContainer,
-    } = this.#DOMElements;
+    const { projects, title, addTask, taskContainer } = this.#DOMElements;
     projects.append(title, taskContainer);
 
     return projects;
+  }
+
+  renderProjectDetail() {
+    const projectName = document.querySelector("#projectName");
+    const project = new Project({ name: projectName });
+    this.#popoverHandler.renderProjectItem(project);
   }
 
   #createProjectTitle() {

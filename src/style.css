@@ -318,6 +318,26 @@ input[type="text"] {
   font-weight: var(--font-weight-bold);
 }
 
+/* Project List */
+.project-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  margin: 0;
+  padding: 0;
+}
+.project-item {
+  width: 100%;
+  list-style-type: none;
+  cursor: pointer;
+
+  font-weight: var(--font-weight-regular);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+}
+
 /* Main Styles */
 #main {
   background-color: var(--color-primary);
