@@ -149,5 +149,43 @@
       </div>
     </dialog>
     <!-- Task Item Modal End -->
+
+    <!-- Projects Modal Start -->
+    <dialog class="projects-modal">
+      <div class="projects__header">
+        <p class="projects__title">Add project</p>
+        <button class="modal__close-btn projects__close-btn">
+          <img class="close-icon" src="./assets/icons/close-icon.svg" alt="" />
+        </button>
+      </div>
+
+      <form method="dialog" id="projects-form">
+        <div class="projects-form__text">
+          <label for="projectName" class="projects-form__label"
+            >Project name</label
+          >
+          <input
+            type="text"
+            id="projectName"
+            class="project-name"
+            name="projectTitle"
+            required
+            autocomplete="off"
+          />
+        </div>
+      </form>
+      <div class="projects__footer">
+        <button
+          type="button"
+          class="projects__cancel button--large filled-button"
+        >
+          Cancel
+        </button>
+        <button class="projects__add-btn cta-button" form="projects-form">
+          Add
+        </button>
+      </div>
+    </dialog>
+    <!-- Projects Modal End -->
   </body>
 </html>

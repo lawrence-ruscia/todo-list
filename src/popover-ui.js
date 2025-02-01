@@ -10,6 +10,14 @@ export class PopoverHandler {
     addTaskBtn: document.querySelector(".add-task__btn"),
     confirmAddTaskBtn: document.querySelector(".confirm-add-task"),
     cancelTaskBtn: document.querySelector(".cancel-add-task"),
+
+    addProjectBtn: document.querySelector(".projects__add"),
+    projectsModal: document.querySelector(".projects-modal"),
+    projectsForm: document.querySelector("#projects-form"),
+    projectName: document.querySelector(".project-name"),
+    projectsClose: document.querySelector(".projects__close-btn"),
+    projectsCancel: document.querySelector(".projects__cancel"),
+    projectsAdd: document.querySelector(".projects__add-btn"),
   };
 
   #domHandler;
@@ -26,6 +34,8 @@ export class PopoverHandler {
     this.#handleTaskForm();
     this.#handleTaskButtons();
     this.#handleInvalidInputs();
+
+    this.#handleProjectsPopover();
   }
 
   #handleTaskForm() {
@@ -61,6 +71,24 @@ export class PopoverHandler {
     });
   }
 
+  #handleProjectsPopover() {
+    this.#DOMElements.addProjectBtn.addEventListener("click", () => {
+      this.#DOMElements.projectsModal.showModal();
+    });
+
+    this.#DOMElements.projectsClose.addEventListener("click", () => {
+      this.#DOMElements.projectsModal.close();
+    });
+
+    this.#DOMElements.projectsModal.addEventListener("close", () => {
+      this.#DOMElements.projectsForm.reset();
+    });
+
+    this.#DOMElements.projectsCancel.addEventListener("click", () => {
+      this.#DOMElements.projectsModal.close();
+    });
+  }
+
   #handleTaskButtons() {
     this.#DOMElements.addTaskBtn.addEventListener("click", () => {
       this.#validateInput();
@@ -78,12 +106,20 @@ export class PopoverHandler {
       this.#DOMElements.confirmAddTaskBtn.disabled =
         !this.#DOMElements.taskFormTitle.checkValidity();
     });
+
+    this.#DOMElements.projectName.addEventListener("input", () => {
+      this.#DOMElements.projectsAdd.disabled =
+        !this.#DOMElements.projectName.checkValidity();
+    });
   }
 
   // HACK: Duplicate code with the handleInvalidInputs, provide a better solution
   #validateInput() {
     this.#DOMElements.confirmAddTaskBtn.disabled =
       !this.#DOMElements.taskFormTitle.checkValidity();
+
+    this.#DOMElements.projectsAdd.disabled =
+      !this.#DOMElements.projectName.checkValidity();
   }
 
   renderTasks() {

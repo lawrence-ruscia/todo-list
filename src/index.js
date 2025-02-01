@@ -10,12 +10,11 @@ class PageRenderer {
   };
 
   constructor() {
-    // FIXME: setUppageEventlisteners tries to add listener to a page that hasn't been appended yet, resulting in a error
+    // FIXME: setUpPageEventlisteners tries to add listener to a
+    //           page that hasn't been appended yet, resulting in a error
     const projects = this.#PageSections.projects;
     this.#appendPage(projects);
-
     new TodoUIHandler().setUpPageEventListeners();
-
     this.#setUpEventListeners();
   }
 
