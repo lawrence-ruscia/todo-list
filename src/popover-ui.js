@@ -20,7 +20,7 @@ export class PopoverHandler {
     this.#todo = new Todo();
   }
 
-  render() {
+  setUpEventListeners() {
     this.renderTasks();
     this.#handleTaskPopover();
     this.#handleTaskForm();

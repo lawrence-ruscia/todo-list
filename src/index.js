@@ -4,32 +4,34 @@ import "./normalize.css";
 import { TodoUIHandler } from "./todo-ui";
 import { ProjectsUIHandler } from "./projects-ui";
 class PageRenderer {
-  #main = document.querySelector("#main");
-  #sidebar = document.querySelector("#sidebar");
+  #content = document.querySelector("#content");
   #PageSections = {
-    todo: new TodoUIHandler(),
-    projects: new ProjectsUIHandler(),
+    projects: new ProjectsUIHandler("My Projects").render(),
   };
 
   constructor() {
-    this.#PageSections.todo.render();
+    // FIXME: setUppageEventlisteners tries to add listener to a page that hasn't been appended yet, resulting in a error
+    const projects = this.#PageSections.projects;
+    this.#appendPage(projects);
 
-    // this.#setUpEventListeners();
+    new TodoUIHandler().setUpPageEventListeners();
+
+    this.#setUpEventListeners();
   }
 
   #setUpEventListeners() {
-    const sidebar = this.#sidebar;
+    const sidebar = document.querySelector("#sidebar");
 
     sidebar.addEventListener("click", (e) => {
       const page = e.target;
 
       if (page.dataset.button) {
         const pageKey = page.dataset.button;
-        const page = this.#PageSections[pageKey];
+        const selectedPage = this.#PageSections[pageKey];
 
-        if (page) {
+        if (selectedPage) {
           this.#clearPage();
-          this.#appendPage(page);
+          this.#appendPage(selectedPage);
 
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         }
@@ -38,11 +40,11 @@ class PageRenderer {
   }
 
   #appendPage(page) {
-    this.#main.appendChild(page);
+    this.#content.append(page);
   }
 
   #clearPage() {
-    this.#main.innerHTML = "";
+    this.#content.innerHTML = "";
   }
 }
 

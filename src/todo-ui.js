@@ -8,17 +8,17 @@ export class TodoUIHandler {
     sidebarHandler: new SidebarHandler(),
   };
 
-  render() {
-    this.#components.taskUI.render();
-    this.#components.popover.render();
-    this.#components.sidebarHandler.render();
+  setUpPageEventListeners() {
+    this.#components.taskUI.setUpEventListeners();
+    this.#components.popover.setUpEventListeners();
+    this.#components.sidebarHandler.setUpEventListeners();
   }
 }
 
 class SidebarHandler {
   #sidebar = document.querySelector("#sidebar");
 
-  render() {
+  setUpEventListeners() {
     this.#handleMenuClick();
   }
   #handleMenuClick() {

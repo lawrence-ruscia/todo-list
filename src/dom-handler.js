@@ -137,6 +137,7 @@ export class DOMHandler {
     required = false,
     min = "",
     max = "",
+    value = "",
     classNames = [],
   } = {}) {
     this.#validateClassNames(classNames);
@@ -149,6 +150,7 @@ export class DOMHandler {
     input.required = !!required;
     input.min = min;
     input.max = max;
+    input.value = value;
 
     this.#addClassNames(input, classNames);
 

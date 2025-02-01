@@ -14,7 +14,7 @@ export class TaskItemHandler {
     todo: new Todo(),
   };
 
-  render() {
+  setUpEventListeners() {
     this.#handleItemClick();
     this.#handleModal();
     this.#renderItemDetails();
