@@ -161,6 +161,21 @@ export class Project {
 }
 
 export class Todo {
+  static #currentProject = null;
+  static #projects = {};
+
+  static get currentProjects() {
+    return this.#currentProject;
+  }
+
+  static get projects() {
+    return this.#projects;
+  }
+
+  static addProjects(projectId, project) {
+    this.#projects[projectId] = project;
+  }
+
   addTask(task) {
     if (!task || !task.id || !task.name)
       throw new Error(`Invalid Task ${JSON.stringify(task)}`);
@@ -271,6 +286,9 @@ export class Todo {
 
     localStorage.setItem(project.id, JSON.stringify(serializedProject));
     localStorage.setItem("projectOrder", JSON.stringify(projectOrder));
+
+    // Add to projects object
+    Todo.addProjects(project.id, serializedProject);
   }
 
   getProject(projectId) {
@@ -288,26 +306,46 @@ export class Todo {
 
     return Project.fromJSON(rehydratedProject);
   }
+
+  static setCurrentProject(projectId) {
+    if (!projectId)
+      throw new Error(`Project with id ${projectId} does not exist.`);
+
+    this.#currentProject = this.#projects[projectId];
+    console.log(`Current project: ${this.#currentProject.name} `);
+  }
+
+  static getCurrentProject() {
+    if (!this.#currentProject) throw new Error("No selected project.");
+    return this.#currentProject;
+  }
 }
 
 // TEST
-// const task1 = new Task({
-//   name: "myTask",
-//   priority: "P1",
-// });
+const task1 = new Task({
+  name: "myTask",
+  priority: "P1",
+});
 
-// const task2 = new Task({
-//   name: "newTask",
-//   priority: "P2",
-// });
+const task2 = new Task({
+  name: "newTask",
+  priority: "P2",
+});
 
-// const todo = new Todo();
+const todo = new Todo();
 // todo.addTask(task1);
 // todo.addTask(task2);
 
-// const project = new Project({ name: "New project" });
+const project = new Project({ name: "New project" });
+const project2 = new Project({ name: "Project 2" });
 // project.appendTask(task1, task2);
-// todo.createProject(project);
+todo.createProject(project);
+todo.createProject(project2);
+Todo.setCurrentProject(project.id);
+console.log(`Selected project is ${Todo.getCurrentProject().name}`);
+
+Todo.setCurrentProject(project2.id);
+console.log(`Selected project is ${Todo.getCurrentProject().name}`);
 
 // const restoredProject = todo.getProject(project.id);
 // console.table(restoredProject);
