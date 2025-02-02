@@ -1,6 +1,7 @@
 import { TaskItemHandler } from "./task-ui";
 import { PopoverHandler } from "./popover-ui";
 import { ProjectsUIHandler } from "./projects-ui";
+import { Todo } from "./todo";
 
 export class TodoUIHandler {
   #components = {
@@ -19,10 +20,13 @@ export class TodoUIHandler {
 }
 
 class SidebarHandler {
+  #todo = new Todo();
+
   #sidebar = document.querySelector("#sidebar");
 
   setUpEventListeners() {
     this.#handleMenuClick();
+    this.#handleSelectedProject();
   }
   #handleMenuClick() {
     let selectedButton = null;
@@ -37,6 +41,18 @@ class SidebarHandler {
 
       button.classList.add("sidebar__btn--selected");
       selectedButton = button; // update selected button
+    });
+  }
+
+  #handleSelectedProject() {
+    this.#sidebar.addEventListener("click", (e) => {
+      const selectedProject = e.target;
+
+      if (selectedProject.dataset.projectId) {
+        const projectId = selectedProject.dataset.projectId;
+        Todo.setCurrentProject(projectId);
+        console.log(`Clicked Project ${Todo.getCurrentProject().name}`);
+      }
     });
   }
 }
