@@ -164,16 +164,54 @@ export class Todo {
   static #currentProject = null;
   static #projects = {};
 
-  static get currentProjects() {
-    return this.#currentProject;
+  // Load projects from localStorage when the class is first used
+  static initialize() {
+    this.loadDefaultProject();
+
+    const storedProjects = JSON.parse(localStorage.getItem("projects")) ?? {};
+    if (storedProjects) {
+      this.#projects = storedProjects;
+    }
+
+    const storedCurrentProject = localStorage.getItem("currentProject") ?? {};
+    if (storedCurrentProject) {
+      this.#currentProject = Project.fromJSON(JSON.parse(storedCurrentProject));
+    }
   }
 
-  static get projects() {
-    return this.#projects;
+  static loadDefaultProject() {
+    if (!localStorage.getItem("defaultProjectLoaded")) {
+      const project = new Project({ name: "My Todo" });
+      const todo = new Todo();
+      todo.createProject(project);
+      this.#currentProject = project;
+      this.saveCurrentProject();
+
+      // Ensure method only executes once
+      localStorage.setItem("defaultProjectLoaded", true);
+    }
   }
 
   static addProjects(projectId, project) {
     this.#projects[projectId] = project;
+
+    Todo.saveProjects();
+  }
+
+  static saveCurrentProject() {
+    localStorage.setItem(
+      "currentProject",
+      JSON.stringify(this.#currentProject)
+    );
+  }
+
+  static saveProjects() {
+    localStorage.setItem("projects", JSON.stringify(this.#projects));
+  }
+
+  static loadProjectsData() {
+    this.#currentProject = JSON.parse(localStorage.getItem("currentProject"));
+    this.#projects = JSON.parse(localStorage.getItem("projects"));
   }
 
   addTask(task) {
@@ -308,16 +346,25 @@ export class Todo {
   }
 
   static setCurrentProject(projectId) {
-    if (!projectId)
+    const projects = JSON.parse(localStorage.getItem("projects"));
+    if (!projects[projectId])
       throw new Error(`Project with id ${projectId} does not exist.`);
 
     this.#currentProject = this.#projects[projectId];
-    console.log(`Current project: ${this.#currentProject.name} `);
+    this.saveCurrentProject();
+    console.log(`Current project: ${this.getCurrentProject().name} `);
   }
 
+  // FIXME: Current Project is not loaded when page is refreshed
   static getCurrentProject() {
-    if (!this.#currentProject) throw new Error("No selected project.");
-    return this.#currentProject;
+    if (!localStorage.getItem("currentProject"))
+      throw new Error("No selected project.");
+
+    const currentProject = Project.fromJSON(
+      JSON.parse(localStorage.getItem("currentProject"))
+    );
+
+    return currentProject;
   }
 }
 
@@ -336,16 +383,18 @@ const todo = new Todo();
 // todo.addTask(task1);
 // todo.addTask(task2);
 
-const project = new Project({ name: "New project" });
-const project2 = new Project({ name: "Project 2" });
-// project.appendTask(task1, task2);
-todo.createProject(project);
-todo.createProject(project2);
-Todo.setCurrentProject(project.id);
-console.log(`Selected project is ${Todo.getCurrentProject().name}`);
+// const project = new Project({ name: "New project" });
+// const project2 = new Project({ name: "Project 2" });
+// // project.appendTask(task1, task2);
+// todo.createProject(project);
+// todo.createProject(project2);
+// Todo.setCurrentProject(project.id);
+// console.log(`Selected project is ${Todo.getCurrentProject().name}`);
 
-Todo.setCurrentProject(project2.id);
-console.log(`Selected project is ${Todo.getCurrentProject().name}`);
+// Todo.setCurrentProject(project2.id);
+// console.log(`Selected project is ${Todo.getCurrentProject().name}`);
 
 // const restoredProject = todo.getProject(project.id);
 // console.table(restoredProject);
+
+Todo.initialize();
