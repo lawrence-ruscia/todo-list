@@ -50,8 +50,8 @@ class SidebarHandler {
 
       if (selectedProject.dataset.projectId) {
         const projectId = selectedProject.dataset.projectId;
-        Todo.setCurrentProject(projectId);
-        console.log(`Clicked Project ${Todo.getCurrentProject().name}`);
+        this.#todo.setCurrentProject(projectId);
+        console.log(`Clicked Project ${this.#todo.getCurrentProject().name}`);
       }
     });
   }
