@@ -114,6 +114,13 @@ export class Project {
     });
   }
 
+  addTask(task) {
+    if (!(task instanceof Task))
+      throw new Error(`Task is not a valid Task instance.`);
+
+    this.#taskList.push(task);
+  }
+
   removeTask(task) {
     if (!task) throw new Error(`Invalid task: ${task}`);
 
@@ -238,6 +245,9 @@ export class Todo {
     localStorage.setItem("taskOrder", JSON.stringify(taskOrder));
 
     console.log(`Added task: ${task.id}`);
+
+    // Add to currentProject
+    this.addTaskToCurrentProject(task);
   }
 
   getTask(taskID) {
@@ -369,6 +379,26 @@ export class Todo {
     if (!this.#currentProject) throw new Error("No selected project.");
 
     return this.#currentProject;
+  }
+
+  addTaskToCurrentProject(task) {
+    if (!task) throw new Error(`Invalid task: ${JSON.stringify(task)}`);
+
+    // HACK: Directly accessing taskList from project
+    const currentProject = this.getCurrentProject();
+    currentProject.taskList.push(task);
+
+    // Update project's taskList from localStorage
+    localStorage.setItem(
+      this.#currentProject.id,
+      JSON.stringify(currentProject)
+    );
+
+    // Update "projects" from localStorage
+    this.#saveProjects();
+
+    // Update "currentProject" from localStorage
+    this.#saveCurrentProject();
   }
 }
 
