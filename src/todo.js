@@ -105,34 +105,6 @@ export class Project {
     );
   }
 
-  appendTask(...tasks) {
-    tasks.forEach((task) => {
-      if (!(task instanceof Task))
-        throw new Error(`Invalid task: ${JSON.stringify(task)}`);
-
-      this.#taskList.push(task);
-    });
-  }
-
-  addTask(task) {
-    if (!(task instanceof Task))
-      throw new Error(`Task is not a valid Task instance.`);
-
-    this.#taskList.push(task);
-  }
-
-  removeTask(task) {
-    if (!task) throw new Error(`Invalid task: ${task}`);
-
-    const taskIndex = this.#taskList.findIndex((t) => t.id === task.id);
-
-    if (taskIndex === -1)
-      throw new Error(`Task with ID ${task.id} does not exist.`);
-
-    console.log(`Removed task ${task.id} from project ${this.#name}`);
-    this.#taskList.splice(taskIndex, 1);
-  }
-
   clear() {
     this.#taskList = [];
   }
@@ -275,6 +247,9 @@ export class Todo {
     if (taskIndex === -1) {
       throw new Error(`Task with ID ${taskID} is not in the task order.`);
     }
+    // remove from project tasklist
+    this.removeFromProjectTaskList(task);
+
     // Remove task from localStorage
     localStorage.removeItem(taskID);
 
@@ -283,17 +258,6 @@ export class Todo {
     localStorage.setItem("taskOrder", JSON.stringify(taskOrder));
 
     console.log(`Removed task: ${taskID}`);
-  }
-
-  getAllTasksInOrder() {
-    const taskOrder = JSON.parse(localStorage.getItem("taskOrder")) ?? [];
-    return taskOrder.map((taskID) => this.getTask(taskID));
-  }
-
-  getAllProjectsInOrder() {
-    const projectsOrder =
-      JSON.parse(localStorage.getItem("projectOrder")) ?? [];
-    return projectsOrder.map((projectId) => this.getProject(projectId));
   }
 
   editTask(taskId, updatedTask) {
@@ -316,7 +280,22 @@ export class Todo {
     });
 
     localStorage.setItem(taskId, JSON.stringify(modifiedTask));
+
+    // update from project tasklist
+    this.updateFromProjectTaskList(taskId, modifiedTask);
+
     console.log(`Updated task: ${taskId}`);
+  }
+
+  getAllTasksInOrder() {
+    const taskOrder = JSON.parse(localStorage.getItem("taskOrder")) ?? [];
+    return taskOrder.map((taskID) => this.getTask(taskID));
+  }
+
+  getAllProjectsInOrder() {
+    const projectsOrder =
+      JSON.parse(localStorage.getItem("projectOrder")) ?? [];
+    return projectsOrder.map((projectId) => this.getProject(projectId));
   }
 
   createProject(project) {
@@ -398,6 +377,62 @@ export class Todo {
     this.#saveProjects();
 
     // Update "currentProject" from localStorage
+    this.#saveCurrentProject();
+  }
+
+  // NOTE: When no project is selected,
+  //          tasklist items becomes null after doing remove/update operations
+  removeFromProjectTaskList(task) {
+    if (!task) throw new Error(`Invalid task: ${JSON.stringify(task)}`);
+
+    const currentProject = this.getCurrentProject();
+
+    const taskIndex = currentProject.taskList.findIndex(
+      (t) => t.id === task.id
+    );
+
+    if (taskIndex === -1)
+      throw new Error(`Task with ID ${task.id} does not exist.`);
+
+    currentProject.taskList.splice(taskIndex, 1);
+    console.log(`Removed task ${task.id} from project ${currentProject.name}`);
+
+    localStorage.setItem(
+      this.#currentProject.id,
+      JSON.stringify(currentProject)
+    );
+
+    this.#saveProjects();
+
+    this.#saveCurrentProject();
+  }
+
+  updateFromProjectTaskList(taskId, updatedTask) {
+    if (!updatedTask)
+      throw new Error(`Invalid task: ${JSON.stringify(updatedTask)}`);
+
+    const currentProject = this.getCurrentProject();
+
+    const taskIndex = currentProject.taskList.findIndex((t) => t.id === taskId);
+
+    if (taskIndex === -1)
+      throw new Error(`Task with ID ${taskId} does not exist.`);
+
+    // Remove previous task
+    currentProject.taskList.splice(taskIndex, 1);
+
+    // Replace with updatedTask
+    currentProject.taskList.splice(taskIndex, 0, updatedTask);
+
+    console.log(`Updated task ${taskId} from project ${currentProject.name}`);
+
+    localStorage.setItem(
+      this.#currentProject.id,
+      JSON.stringify(currentProject)
+    );
+
+    this.#saveProjects();
+
     this.#saveCurrentProject();
   }
 }
