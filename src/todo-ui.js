@@ -1,7 +1,7 @@
 import { TaskItemHandler } from "./task-ui";
 import { PopoverHandler } from "./popover-ui";
 import { ProjectsUIHandler } from "./projects-ui";
-import { Todo } from "./todo";
+import { Todo, Project } from "./todo";
 
 export class TodoUIHandler {
   #components = {
@@ -21,6 +21,7 @@ export class TodoUIHandler {
 
 class SidebarHandler {
   #todo = new Todo();
+  #projectUI = new ProjectsUIHandler();
 
   #sidebar = document.querySelector("#sidebar");
 
@@ -52,6 +53,10 @@ class SidebarHandler {
         const projectId = selectedProject.dataset.projectId;
         this.#todo.setCurrentProject(projectId);
         console.log(`Clicked Project ${this.#todo.getCurrentProject().name}`);
+
+        const currentProject = Project.fromJSON(this.#todo.getCurrentProject());
+
+        this.#projectUI.renderProject(currentProject);
       }
     });
   }

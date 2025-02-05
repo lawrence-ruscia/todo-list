@@ -7,6 +7,7 @@ export class PopoverHandler {
     taskPopover: document.querySelector(".add-task__popover"),
     taskForm: document.querySelector("#add-task__form"),
     taskFormTitle: document.querySelector(".task-form__title"),
+    taskContainer: document.querySelector(".task-container"),
     addTaskBtn: document.querySelector(".add-task__btn"),
     confirmAddTaskBtn: document.querySelector(".confirm-add-task"),
     cancelTaskBtn: document.querySelector(".cancel-add-task"),
@@ -53,7 +54,7 @@ export class PopoverHandler {
 
       const task = new Task({ name, description, dueDate, priority });
       this.#addTaskToStorage(task);
-      this.#renderTaskItem(task);
+      this.renderTaskItem(task);
 
       this.#DOMElements.taskPopover.close();
     });
@@ -147,9 +148,16 @@ export class PopoverHandler {
     console.log(tasks);
 
     tasks.forEach((task) => {
-      this.#renderTaskItem(task);
+      this.renderTaskItem(task);
       console.log(`Rendered task: ${task.name}`);
     });
+  }
+
+  // TODO: Move this to `task-ui.js`
+  renderTaskItem(task) {
+    const taskContainer = document.querySelector(".task-container");
+    const taskItem = this.#createTaskItem(task);
+    taskContainer.insertBefore(taskItem, taskContainer.lastElementChild);
   }
 
   renderProjects() {
@@ -168,12 +176,6 @@ export class PopoverHandler {
 
   #addProjectToStorage(project) {
     this.#todo.createProject(project);
-  }
-
-  #renderTaskItem(task) {
-    const taskContainer = document.querySelector(".task-container");
-    const taskItem = this.#createTaskItem(task);
-    taskContainer.insertBefore(taskItem, taskContainer.lastElementChild);
   }
 
   #renderProjectItem(project) {

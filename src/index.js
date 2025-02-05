@@ -10,14 +10,16 @@ class PageRenderer {
   };
 
   constructor() {
-    // FIXME: setUpPageEventlisteners tries to add listener to a
-    //           page that hasn't been appended yet, resulting in a error
+    // IDEA: When a project is clicked, clear page, then render the associated title, and task list
     const projects = this.#PageSections.projects;
     this.#appendPage(projects);
+
     new TodoUIHandler().setUpPageEventListeners();
     this.#setUpEventListeners();
   }
 
+  // FIXME: setUpPageEventlisteners tries to add listener to a
+  //           page that hasn't been appended yet, resulting in a error
   #setUpEventListeners() {
     const sidebar = document.querySelector("#sidebar");
 

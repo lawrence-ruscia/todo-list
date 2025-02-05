@@ -38,6 +38,42 @@ export class ProjectsUIHandler {
     this.#popoverHandler.renderProjectItem(project);
   }
 
+  renderProject(project) {
+    this.#renderProjectTitle(project);
+    this.#renderProjectTaskList(project);
+  }
+
+  #renderProjectTitle(project) {
+    if (!project)
+      throw new Error(`Invalid project Id: ${JSON.stringify(project)}`);
+
+    const titleInput = document.querySelector(".title-input");
+    titleInput.value = project.name;
+  }
+
+  #renderProjectTaskList(project) {
+    if (!project)
+      throw new Error(`Invalid project Id: ${JSON.stringify(project)}`);
+
+    this.#clearProjectTaskList();
+
+    project.taskList.forEach((task) => {
+      this.#popoverHandler.renderTaskItem(task);
+      console.log(`Rendered task ${task.name} from project ${project.name}`);
+    });
+
+    console.log(`Project "${project.name}" task list rendered.`);
+  }
+
+  #clearProjectTaskList() {
+    const tasks = document.querySelectorAll(".task-item");
+
+    tasks.forEach((task) => {
+      console.log("Removing task...");
+      task.remove();
+    });
+  }
+
   #createProjectTitle() {
     const container = this.#domHandler.createDiv({
       classNames: ["project-title"],

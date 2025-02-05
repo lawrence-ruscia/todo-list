@@ -338,6 +338,10 @@ input[type="text"] {
   align-items: center;
 }
 
+.project-item__title {
+  pointer-events: none;
+}
+
 /* Main Styles */
 #main {
   background-color: var(--color-primary);
