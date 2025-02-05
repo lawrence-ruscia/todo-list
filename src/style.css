@@ -400,6 +400,7 @@ input[type="text"] {
 
   cursor: pointer;
 }
+
 /* Task Item Modal */
 /* NOTE: When applying `display: ` always use the `open` attribute, otherwise modal will always display */
 .task-item__modal[open] {
@@ -533,6 +534,8 @@ input[type="text"] {
 
 /* Task Details Section*/
 .task__details {
+  pointer-events: none;
+
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
