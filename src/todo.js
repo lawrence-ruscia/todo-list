@@ -117,6 +117,10 @@ export class Project {
     return this.#name;
   }
 
+  set name(newName) {
+    this.#name = newName;
+  }
+
   get taskList() {
     return this.#taskList;
   }
@@ -317,7 +321,7 @@ export class Todo {
       taskList: project.taskList.map((task) => task.toJSON()),
     };
 
-    localStorage.setItem(project.id, JSON.stringify(serializedProject));
+    this.#saveProjectToLocalStorage(project.id, serializedProject);
     localStorage.setItem("projectOrder", JSON.stringify(projectOrder));
 
     // Add to projects object
@@ -339,6 +343,27 @@ export class Todo {
     };
 
     return Project.fromJSON(rehydratedProject);
+  }
+
+  #saveProjectToLocalStorage(projectId, project) {
+    localStorage.setItem(projectId, JSON.stringify(project));
+  }
+
+  updateProjectName(projectId, newProjectName) {
+    if (!projectId) throw new Error(`Invalid project Id: ${projectId}`);
+    if (!newProjectName)
+      throw new Error(
+        `Invalid project name: ${JSON.stringify(newProjectName)}`
+      );
+
+    const project = this.getProject(projectId);
+
+    // update name
+    project.name = newProjectName;
+
+    // update project in `projects` and `localStorage`
+    this.addProject(projectId, project);
+    this.#saveProjectToLocalStorage(projectId, project);
   }
 
   setCurrentProject(projectId) {
@@ -456,6 +481,7 @@ const todo = new Todo();
 // const project2 = new Project({ name: "Project 2" });
 // // project.appendTask(task1, task2);
 // todo.createProject(project);
+// todo.updateProjectName(project.id, "ULOL");
 // todo.createProject(project2);
 // Todo.setCurrentProject(project.id);
 // console.log(`Selected project is ${Todo.getCurrentProject().name}`);
