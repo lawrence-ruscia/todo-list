@@ -2,7 +2,7 @@ import { DOMHandler } from "./dom-handler";
 import { PopoverHandler } from "./popover-ui";
 import { Todo, Task, Project } from "./todo";
 
-export class ProjectsUIHandler {
+export class ProjectItemUIHandler {
   #domHandler = new DOMHandler();
   #DOMElements;
   #popoverHandler;

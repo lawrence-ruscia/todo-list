@@ -2,15 +2,15 @@ import "./style.css";
 import "./normalize.css";
 
 import { TodoUIHandler } from "./todo-ui";
-import { ProjectsUIHandler } from "./projects-ui";
+import { ProjectItemUIHandler } from "./projects-ui";
 class PageRenderer {
   #content = document.querySelector("#content");
   #PageSections = {
-    projects: new ProjectsUIHandler("My Projects").render(),
+    projectItem: new ProjectItemUIHandler("My Projects").render(),
   };
 
   constructor() {
-    const projects = this.#PageSections.projects;
+    const projects = this.#PageSections.projectItem;
     this.#appendPage(projects);
 
     new TodoUIHandler().setUpPageEventListeners();

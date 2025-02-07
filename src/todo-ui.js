@@ -1,12 +1,12 @@
 import { TaskItemHandler } from "./task-ui";
 import { PopoverHandler } from "./popover-ui";
-import { ProjectsUIHandler } from "./projects-ui";
+import { ProjectItemUIHandler } from "./projects-ui";
 import { Todo, Project } from "./todo";
 
 export class TodoUIHandler {
   #components = {
     taskUI: new TaskItemHandler(),
-    projectUI: new ProjectsUIHandler(),
+    projectItemUI: new ProjectItemUIHandler(),
     popover: new PopoverHandler(),
     sidebarHandler: new SidebarHandler(),
     themeHandler: new ThemeHandler(),
@@ -14,7 +14,7 @@ export class TodoUIHandler {
 
   setUpPageEventListeners() {
     this.#components.taskUI.setUpEventListeners();
-    this.#components.projectUI.setUpEventListeners();
+    this.#components.projectItemUI.setUpEventListeners();
     this.#components.popover.setUpEventListeners();
     this.#components.sidebarHandler.setUpEventListeners();
     this.#components.themeHandler.setUpEventListeners();
@@ -23,7 +23,7 @@ export class TodoUIHandler {
 
 class SidebarHandler {
   #todo = new Todo();
-  #projectUI = new ProjectsUIHandler();
+  #projectItemUI = new ProjectItemUIHandler();
 
   #sidebar = document.querySelector("#sidebar");
 
@@ -58,7 +58,7 @@ class SidebarHandler {
 
         const currentProject = Project.fromJSON(this.#todo.getCurrentProject());
 
-        this.#projectUI.renderProject(currentProject);
+        this.#projectItemUI.renderProject(currentProject);
       }
     });
   }
