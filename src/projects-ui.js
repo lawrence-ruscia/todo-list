@@ -1,15 +1,24 @@
 import { DOMHandler } from "./dom-handler";
 import { PopoverHandler } from "./popover-ui";
 import { Todo, Task, Project } from "./todo";
+import { TodoUIHandler } from "./todo-ui";
 
+export class ProjectsUIHandler {
+  render() {
+    const project = document.createElement("div");
+    return project;
+  }
+}
 export class ProjectItemUIHandler {
   #domHandler = new DOMHandler();
+  #todo;
   #DOMElements;
   #popoverHandler;
   #title;
 
   constructor(title) {
     this.#title = title;
+    this.#todo = new Todo();
     this.#popoverHandler = new PopoverHandler();
     this.#DOMElements = {
       projects: this.#domHandler.createDiv({ id: "project" }),
@@ -23,13 +32,48 @@ export class ProjectItemUIHandler {
     return this.#title;
   }
 
-  setUpEventListeners() {}
+  setUpEventListeners() {
+    this.renderProjects();
+  }
 
   render() {
     const { projects, title, addTask, taskContainer } = this.#DOMElements;
     projects.append(title, taskContainer);
 
     return projects;
+  }
+
+  renderProjects() {
+    const projects = this.#todo.getAllProjectsInOrder();
+    console.log(projects);
+
+    projects.forEach((project) => {
+      this.renderProjectItem(project);
+      console.log(`Rendered project: ${project.name}`);
+    });
+  }
+
+  renderProjectItem(project) {
+    const projectList = document.querySelector(".project-list");
+    const projectItem = this.#createProjectItem(project);
+    projectItem.dataset.projectId = project.id;
+    projectItem.dataset.button = "project-item";
+
+    projectList.append(projectItem);
+  }
+
+  #createProjectItem(project) {
+    const projectItem = this.#domHandler.createListItem({
+      classNames: ["project-item", "sidebar__btn", "page-button"],
+    });
+    const projectTitle = this.#domHandler.createPara({
+      textContent: `# ${project.name}`,
+      classNames: ["project-item__title"],
+    });
+
+    projectItem.append(projectTitle);
+
+    return projectItem;
   }
 
   renderProjectDetail() {

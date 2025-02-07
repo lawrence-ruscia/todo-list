@@ -2,23 +2,24 @@ import "./style.css";
 import "./normalize.css";
 
 import { TodoUIHandler } from "./todo-ui";
-import { ProjectItemUIHandler } from "./projects-ui";
+import { ProjectItemUIHandler, ProjectsUIHandler } from "./projects-ui";
 class PageRenderer {
   #content = document.querySelector("#content");
   #PageSections = {
+    projects: new ProjectsUIHandler().render(),
     projectItem: new ProjectItemUIHandler("My Projects").render(),
   };
 
   constructor() {
-    const projects = this.#PageSections.projectItem;
-    this.#appendPage(projects);
+    const projectItem = this.#PageSections.projectItem;
+    this.#appendPage(projectItem);
 
-    new TodoUIHandler().setUpPageEventListeners();
+    const todoUIHandler = new TodoUIHandler();
+    todoUIHandler.setUpEventListeners();
+
     this.#setUpEventListeners();
   }
 
-  // FIXME: setUpPageEventlisteners tries to add listener to a
-  //           page that hasn't been appended yet, resulting in a error
   #setUpEventListeners() {
     const sidebar = document.querySelector("#sidebar");
 
@@ -28,8 +29,10 @@ class PageRenderer {
       if (page.dataset.button) {
         const pageKey = page.dataset.button;
         const selectedPage = this.#PageSections[pageKey];
+        console.log(selectedPage);
 
         if (selectedPage) {
+          console.log("Projects clicked");
           this.#clearPage();
           this.#appendPage(selectedPage);
 

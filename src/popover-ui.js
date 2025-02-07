@@ -1,6 +1,7 @@
 import editIcon from "./assets/icons/edit-icon.svg";
 import { Todo, Task, Project } from "./todo";
 import { DOMHandler } from "./dom-handler";
+import { ProjectItemUIHandler } from "./projects-ui";
 
 export class PopoverHandler {
   #DOMElements = {
@@ -31,7 +32,6 @@ export class PopoverHandler {
 
   setUpEventListeners() {
     this.renderTasks();
-    this.renderProjects();
     this.#handleTaskPopover();
     this.#handleTaskForm();
     this.#handleProjectsForm();
@@ -74,8 +74,9 @@ export class PopoverHandler {
       const projectName = this.#DOMElements.projectName.value;
 
       const project = new Project({ name: projectName });
+      const projectItemUI = new ProjectItemUIHandler();
       this.#addProjectToStorage(project);
-      this.#renderProjectItem(project);
+      projectItemUI.renderProjectItem(project);
       this.#DOMElements.projectsModal.close();
     });
 
@@ -160,30 +161,12 @@ export class PopoverHandler {
     taskContainer.insertBefore(taskItem, taskContainer.lastElementChild);
   }
 
-  renderProjects() {
-    const projects = this.#todo.getAllProjectsInOrder();
-    console.log(projects);
-
-    projects.forEach((project) => {
-      this.#renderProjectItem(project);
-      console.log(`Rendered project: ${project.name}`);
-    });
-  }
-
   #addTaskToStorage(task) {
     this.#todo.addTask(task);
   }
 
   #addProjectToStorage(project) {
     this.#todo.createProject(project);
-  }
-
-  #renderProjectItem(project) {
-    const projectList = document.querySelector(".project-list");
-    const projectItem = this.#createProjectItem(project);
-    projectItem.dataset.projectId = project.id;
-
-    projectList.append(projectItem);
   }
 
   deleteTaskItem(taskId) {
@@ -223,20 +206,6 @@ export class PopoverHandler {
     taskItem.append(details, options);
 
     return taskItem;
-  }
-
-  #createProjectItem(project) {
-    const projectItem = this.#domHandler.createListItem({
-      classNames: ["project-item", "sidebar__btn", "page-button"],
-    });
-    const projectTitle = this.#domHandler.createPara({
-      textContent: `# ${project.name}`,
-      classNames: ["project-item__title"],
-    });
-
-    projectItem.append(projectTitle);
-
-    return projectItem;
   }
 
   #createTaskDetails(name) {

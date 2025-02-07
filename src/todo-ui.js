@@ -4,6 +4,8 @@ import { ProjectItemUIHandler } from "./projects-ui";
 import { Todo, Project } from "./todo";
 
 export class TodoUIHandler {
+  static instance;
+
   #components = {
     taskUI: new TaskItemHandler(),
     projectItemUI: new ProjectItemUIHandler(),
@@ -12,25 +14,56 @@ export class TodoUIHandler {
     themeHandler: new ThemeHandler(),
   };
 
-  setUpPageEventListeners() {
-    this.#components.taskUI.setUpEventListeners();
+  constructor() {
+    if (!TodoUIHandler.instance) {
+      return TodoUIHandler.instance;
+    }
+
+    TodoUIHandler.instance = this;
+  }
+
+  setUpEventListeners() {
+    this.#setUpPageEventListeners();
+    this.setUpTaskEventListeners();
+  }
+
+  #setUpPageEventListeners() {
     this.#components.projectItemUI.setUpEventListeners();
-    this.#components.popover.setUpEventListeners();
     this.#components.sidebarHandler.setUpEventListeners();
     this.#components.themeHandler.setUpEventListeners();
+  }
+
+  setUpTaskEventListeners() {
+    this.#components.taskUI.setUpEventListeners();
+    this.#components.popover.setUpEventListeners();
   }
 }
 
 class SidebarHandler {
-  #todo = new Todo();
-  #projectItemUI = new ProjectItemUIHandler();
+  #taskListenersLoaded = false;
 
-  #sidebar = document.querySelector("#sidebar");
+  #todo;
+
+  #projectItemUI;
+  #todoUIHandler = null;
+
+  #sidebar;
+  #content;
+
+  constructor() {
+    this.#todo = new Todo();
+
+    this.#projectItemUI = new ProjectItemUIHandler();
+
+    this.#sidebar = document.querySelector("#sidebar");
+    this.#content = document.querySelector("#content");
+  }
 
   setUpEventListeners() {
     this.#handleMenuClick();
     this.#handleSelectedProject();
   }
+
   #handleMenuClick() {
     let selectedButton = null;
     this.#sidebar.addEventListener("click", (e) => {
@@ -58,9 +91,36 @@ class SidebarHandler {
 
         const currentProject = Project.fromJSON(this.#todo.getCurrentProject());
 
+        const projectItemUIDiv = document.querySelector("#project");
+        if (!projectItemUIDiv) {
+          // If `projectItemUIDiv` is not present render a new one
+          this.#renderProjectItemUIDiv();
+
+          // Only set up task event listeners ONCE
+          if (!this.#taskListenersLoaded) {
+            this.#getTodoUIHandler().setUpTaskEventListeners();
+            this.#taskListenersLoaded = true; // Avoid re-adding listeners
+          }
+        }
+
         this.#projectItemUI.renderProject(currentProject);
       }
     });
+  }
+
+  #getTodoUIHandler() {
+    // Only create an instance when it's actually needed
+    if (!this.#todoUIHandler) {
+      this.#todoUIHandler = new TodoUIHandler();
+    }
+    return this.#todoUIHandler;
+  }
+
+  #renderProjectItemUIDiv() {
+    const content = this.#content;
+
+    const projectItemUIDiv = this.#projectItemUI.render();
+    content.append(projectItemUIDiv);
   }
 }
 
