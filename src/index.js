@@ -10,7 +10,6 @@ class PageRenderer {
   };
 
   constructor() {
-    // IDEA: When a project is clicked, clear page, then render the associated title, and task list
     const projects = this.#PageSections.projects;
     this.#appendPage(projects);
 

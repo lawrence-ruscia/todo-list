@@ -9,6 +9,7 @@ export class TodoUIHandler {
     projectUI: new ProjectsUIHandler(),
     popover: new PopoverHandler(),
     sidebarHandler: new SidebarHandler(),
+    themeHandler: new ThemeHandler(),
   };
 
   setUpPageEventListeners() {
@@ -16,6 +17,7 @@ export class TodoUIHandler {
     this.#components.projectUI.setUpEventListeners();
     this.#components.popover.setUpEventListeners();
     this.#components.sidebarHandler.setUpEventListeners();
+    this.#components.themeHandler.setUpEventListeners();
   }
 }
 
@@ -59,5 +61,35 @@ class SidebarHandler {
         this.#projectUI.renderProject(currentProject);
       }
     });
+  }
+}
+
+class ThemeHandler {
+  #themeBtn;
+  #body;
+
+  constructor() {
+    this.#themeBtn = document.querySelector("#theme-btn");
+    this.#body = document.body;
+  }
+
+  setUpEventListeners() {
+    this.#loadDarkMode();
+
+    this.#themeBtn.addEventListener("click", () => {
+      this.#toggleDarkMode();
+    });
+  }
+
+  #loadDarkMode() {
+    const isDarkMode = localStorage.getItem("theme") === "dark";
+    if (isDarkMode) {
+      this.#body.classList.add("dark-mode");
+    }
+  }
+
+  #toggleDarkMode() {
+    const isDark = this.#body.classList.toggle("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
   }
 }
