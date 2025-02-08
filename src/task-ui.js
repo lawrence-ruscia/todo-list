@@ -1,3 +1,5 @@
+import editIcon from "./assets/icons/edit-icon.svg";
+import { DOMHandler } from "./dom-handler";
 import { PopoverHandler } from "./popover-ui";
 import { Todo, Task } from "./todo";
 export class TaskItemHandler {
@@ -10,15 +12,97 @@ export class TaskItemHandler {
     descriptionInput: document.querySelector(".item-form__description"),
     dueDateInput: document.querySelector(".item-form__date"),
     priorityInput: document.querySelector(".item-form__priority"),
-
-    todo: new Todo(),
   };
+  #todo;
+  #domHandler;
+
+  constructor() {
+    this.#todo = new Todo();
+    this.#domHandler = new DOMHandler();
+  }
 
   setUpEventListeners() {
+    this.renderTasks();
     this.#handleItemClick();
     this.#handleModal();
     this.#renderItemDetails();
     this.#handleSaveClick();
+  }
+
+  renderTasks() {
+    const tasks = this.#todo.getAllTasksInOrder();
+    console.log(tasks);
+
+    tasks.forEach((task) => {
+      this.renderTaskItem(task);
+      console.log(`Rendered task: ${task.name}`);
+    });
+  }
+
+  renderTaskItem(task) {
+    const taskContainer = document.querySelector(".task-container");
+    const taskItem = this.#createTaskItem(task);
+    taskContainer.insertBefore(taskItem, taskContainer.lastElementChild);
+  }
+
+  #createTaskItem(task) {
+    const taskItem = this.#domHandler.createListItem({
+      classNames: ["task-item"],
+    });
+
+    // Assign data attr for later retrieval
+    taskItem.dataset.taskId = task.id;
+
+    const details = this.#createTaskDetails(task.name);
+    const options = this.#createTaskOptions();
+
+    taskItem.append(details, options);
+
+    return taskItem;
+  }
+
+  #createTaskDetails(name) {
+    const details = this.#domHandler.createDiv({
+      classNames: ["task__details"],
+    });
+    const label = this.#domHandler.createLabel({
+      classNames: ["checkbox"],
+    });
+    const input = this.#domHandler.createInput({
+      type: "checkbox",
+      classNames: ["checkbox__input"],
+    });
+    const box = this.#domHandler.createSpan({
+      classNames: ["checkbox__box"],
+    });
+    const title = this.#domHandler.createPara({
+      textContent: name,
+      classNames: ["task__title"],
+    });
+
+    label.append(input, box);
+    details.append(label, title);
+
+    return details;
+  }
+
+  #createTaskOptions() {
+    const options = this.#domHandler.createDiv({
+      classNames: ["task__options"],
+    });
+
+    const editButton = this.#domHandler.createButton({
+      classNames: ["task__edit"],
+    });
+    const icon = this.#domHandler.createImg({
+      src: editIcon,
+      classNames: ["task-btn-img", "btn-icon"],
+    });
+
+    editButton.append(icon);
+    options.append(editButton);
+
+    return options;
   }
 
   #handleItemClick() {
@@ -78,7 +162,7 @@ export class TaskItemHandler {
         // Get task ID and retrieve task obj
         const taskId = taskItem.dataset.taskId;
         console.log(`Task selected: ${taskId}`);
-        const task = this.#DOMElements.todo.getTask(taskId);
+        const task = this.#todo.getTask(taskId);
 
         // Render task data on input fields
         const titleInput = this.#DOMElements.titleInput;
@@ -100,9 +184,6 @@ export class TaskItemHandler {
   }
 
   #handleSaveClick() {
-    const todo = this.#DOMElements.todo;
-    const popover = new PopoverHandler();
-
     const form = this.#DOMElements.itemForm;
 
     form.addEventListener("submit", (e) => {
@@ -123,30 +204,51 @@ export class TaskItemHandler {
       });
 
       // Update task in localStorage
-      todo.editTask(taskId, updatedTask);
+      this.#todo.editTask(taskId, updatedTask);
 
       // Update task details in the DOM
-      popover.updateTaskItem(taskId, updatedTask);
+      this.#updateTaskItem(taskId, updatedTask);
       console.log(`Task ${taskId} has been updated.`);
     });
   }
 
   #handleDeleteClick(task) {
     const deleteBtn = document.querySelector(".options__delete");
-    const todo = this.#DOMElements.todo;
-    const popover = new PopoverHandler();
 
     const newDeleteBtn = deleteBtn.cloneNode(true);
     deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
 
     newDeleteBtn.addEventListener("click", (e) => {
       // Delete from DOM
-      popover.deleteTaskItem(task.id);
+      this.#deleteTaskItem(task.id);
 
       // Delete from localStorage
-      todo.deleteTask(task);
+      this.#todo.deleteTask(task);
 
       this.#DOMElements.modal.close();
+    });
+  }
+
+  #deleteTaskItem(taskId) {
+    const taskItems = document.querySelectorAll(".task-item");
+
+    taskItems.forEach((taskItem) => {
+      if (taskItem.dataset.taskId === taskId) {
+        taskItem.remove();
+      }
+    });
+  }
+
+  #updateTaskItem(taskId, updatedTask) {
+    const taskItems = document.querySelectorAll(".task-item");
+
+    taskItems.forEach((taskItem) => {
+      // Locate which task item matches the given ID
+      if (taskItem.dataset.taskId === taskId) {
+        // Modify the task title text content
+        console.log("Task Item Located!");
+        taskItem.querySelector(".task__title").textContent = updatedTask.name;
+      }
     });
   }
 }

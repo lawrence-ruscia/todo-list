@@ -3,6 +3,7 @@ import { PopoverHandler } from "./popover-ui";
 import { Todo, Task, Project } from "./todo";
 import { TodoUIHandler } from "./todo-ui";
 import hashIcon from "./assets/icons/hash-icon.svg";
+import { TaskItemHandler } from "./task-ui";
 
 export class ProjectsUIHandler {
   #domHandler = new DOMHandler();
@@ -124,12 +125,14 @@ export class ProjectItemUIHandler {
   #todo;
   #DOMElements;
   #popoverHandler;
+  #taskItemHandler;
   #title;
 
   constructor(title) {
     this.#title = title;
     this.#todo = new Todo();
     this.#popoverHandler = new PopoverHandler();
+    this.#taskItemHandler = new TaskItemHandler();
     this.#DOMElements = {
       projects: this.#domHandler.createDiv({ id: "project" }),
       title: this.#createProjectTitle(),
@@ -218,7 +221,7 @@ export class ProjectItemUIHandler {
     this.#clearProjectTaskList();
 
     project.taskList.forEach((task) => {
-      this.#popoverHandler.renderTaskItem(task);
+      this.#taskItemHandler.renderTaskItem(task);
       console.log(`Rendered task ${task.name} from project ${project.name}`);
     });
 
