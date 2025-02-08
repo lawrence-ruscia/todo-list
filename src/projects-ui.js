@@ -2,13 +2,123 @@ import { DOMHandler } from "./dom-handler";
 import { PopoverHandler } from "./popover-ui";
 import { Todo, Task, Project } from "./todo";
 import { TodoUIHandler } from "./todo-ui";
+import hashIcon from "./assets/icons/hash-icon.svg";
 
 export class ProjectsUIHandler {
+  #domHandler = new DOMHandler();
+  #DOMElements;
+  #popoverHandler;
+  #title;
+  #todo;
+
+  constructor() {
+    this.#title = "My Projects";
+    this.#popoverHandler = new PopoverHandler();
+    this.#todo = new Todo();
+    this.#DOMElements = {
+      projects: this.#domHandler.createDiv({ id: "projects" }),
+      title: this.#createProjectTitle(),
+      myProjects: this.#createMyProjects(),
+    };
+  }
+  setUpEventListeners() {
+    this.#handleProjectCount();
+  }
+
+  #handleProjectCount() {
+    document.addEventListener("ProjectUIUpdated", (e) => {
+      const count = document.querySelector(".my-projects__project-count");
+      const totalProjects = this.#todo.getAllProjectsInOrder().length;
+
+      count.textContent =
+        totalProjects === 1
+          ? `${totalProjects} project`
+          : `${totalProjects} projects`;
+    });
+  }
+
   render() {
-    const project = document.createElement("div");
-    return project;
+    const { projects, title, myProjects } = this.#DOMElements;
+    projects.append(title, myProjects);
+
+    return projects;
+  }
+
+  #createProjectTitle() {
+    const container = this.#domHandler.createDiv({
+      classNames: ["project-title"],
+    });
+
+    const input = this.#domHandler.createInput({
+      type: "text",
+      id: "myProjects__title",
+      classNames: ["title-input"],
+      name: "myProject",
+      value: this.#title,
+      readOnly: true,
+    });
+
+    container.append(input);
+
+    return container;
+  }
+
+  #createMyProjects() {
+    const container = this.#domHandler.createDiv({
+      classNames: ["my-projects"],
+    });
+
+    const projectCount = this.#domHandler.createPara({
+      textContent: "0 projects",
+      classNames: ["my-projects__project-count"],
+    });
+    const projectList = this.#createProjectList();
+
+    container.append(projectCount, projectList);
+
+    return container;
+  }
+
+  #createProjectList() {
+    const list = this.#domHandler.createList({
+      listType: "ul",
+      classNames: ["my-projects__list"],
+    });
+
+    // TEMP:
+    const item1 = this.#createProjectItem(new Project({ name: "Project X" }));
+    const item2 = this.#createProjectItem(
+      new Project({ name: "Untitled Project" })
+    );
+    list.append(item1, item2);
+
+    return list;
+  }
+
+  #createProjectItem(project) {
+    if (!project)
+      throw new Error(`Invalid project ${JSON.stringify(project)}.`);
+
+    const li = this.#domHandler.createListItem({
+      classNames: ["my-projects__item"],
+    });
+
+    const img = this.#domHandler.createImg({
+      src: hashIcon,
+      classNames: ["project-item__img"],
+    });
+
+    const itemTitle = this.#domHandler.createPara({
+      textContent: project.name,
+      classNames: ["project-item__title"],
+    });
+
+    li.append(img, itemTitle);
+
+    return li;
   }
 }
+
 export class ProjectItemUIHandler {
   #domHandler = new DOMHandler();
   #todo;
@@ -53,6 +163,7 @@ export class ProjectItemUIHandler {
     });
   }
 
+  // FIXME: Duplicate rendering
   renderProjectItem(project) {
     const projectList = document.querySelector(".project-list");
     const projectItem = this.#createProjectItem(project);
@@ -60,6 +171,11 @@ export class ProjectItemUIHandler {
     projectItem.dataset.button = "project-item";
 
     projectList.append(projectItem);
+
+    // Dispatch `ProjectUIUpdated` event
+    if (document.querySelector(".my-projects")) {
+      document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
+    }
   }
 
   #createProjectItem(project) {

@@ -29,15 +29,16 @@ class PageRenderer {
       if (page.dataset.button) {
         const pageKey = page.dataset.button;
         const selectedPage = this.#PageSections[pageKey];
-        console.log(selectedPage);
 
         if (selectedPage) {
-          console.log("Projects clicked");
           this.#clearPage();
           this.#appendPage(selectedPage);
 
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         }
+
+        if (pageKey === "projects")
+          document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
       }
     });
   }
