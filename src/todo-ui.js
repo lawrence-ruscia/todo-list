@@ -24,11 +24,11 @@ export class TodoUIHandler {
   }
 
   setUpEventListeners() {
-    this.#setUpPageEventListeners();
+    this.setUpPageEventListeners();
     this.setUpTaskEventListeners();
   }
 
-  #setUpPageEventListeners() {
+  setUpPageEventListeners() {
     this.#components.projectsUIHandler.setUpEventListeners();
     this.#components.projectItemUI.setUpEventListeners();
     this.#components.sidebarHandler.setUpEventListeners();

@@ -11,11 +11,12 @@ class PageRenderer {
   };
 
   constructor() {
-    const projectItem = this.#PageSections.projectItem;
-    this.#appendPage(projectItem);
+    const projects = this.#PageSections.projects;
+    this.#appendPage(projects);
+    document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
 
-    const todoUIHandler = new TodoUIHandler();
-    todoUIHandler.setUpEventListeners();
+    const todo = new TodoUIHandler();
+    todo.setUpPageEventListeners();
 
     this.#setUpEventListeners();
   }
