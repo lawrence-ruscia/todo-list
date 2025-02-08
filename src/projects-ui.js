@@ -8,13 +8,11 @@ import { TaskItemHandler } from "./task-ui";
 export class ProjectsUIHandler {
   #domHandler = new DOMHandler();
   #DOMElements;
-  #popoverHandler;
   #title;
   #todo;
 
   constructor() {
     this.#title = "My Projects";
-    this.#popoverHandler = new PopoverHandler();
     this.#todo = new Todo();
     this.#DOMElements = {
       projects: this.#domHandler.createDiv({ id: "projects" }),
@@ -124,14 +122,12 @@ export class ProjectItemUIHandler {
   #domHandler = new DOMHandler();
   #todo;
   #DOMElements;
-  #popoverHandler;
   #taskItemHandler;
   #title;
 
   constructor(title) {
     this.#title = title;
     this.#todo = new Todo();
-    this.#popoverHandler = new PopoverHandler();
     this.#taskItemHandler = new TaskItemHandler();
     this.#DOMElements = {
       projects: this.#domHandler.createDiv({ id: "project" }),
@@ -198,7 +194,7 @@ export class ProjectItemUIHandler {
   renderProjectDetail() {
     const projectName = document.querySelector("#projectName");
     const project = new Project({ name: projectName });
-    this.#popoverHandler.renderProjectItem(project);
+    this.renderProjectItem(project);
   }
 
   renderProject(project) {

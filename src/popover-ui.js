@@ -22,12 +22,10 @@ export class PopoverHandler {
     projectsAdd: document.querySelector(".projects__add-btn"),
   };
 
-  #domHandler;
   #todo;
   #taskItemHandler;
 
   constructor() {
-    this.#domHandler = new DOMHandler();
     this.#todo = new Todo();
     this.#taskItemHandler = new TaskItemHandler();
   }
@@ -37,6 +35,7 @@ export class PopoverHandler {
     this.#handleTaskForm();
     this.#handleProjectsForm();
     this.#handleTaskButtons();
+    this.#handleProjectButtons();
     this.#handleInvalidInputs();
 
     this.#handleProjectsPopover();
@@ -54,7 +53,7 @@ export class PopoverHandler {
       const priority = document.querySelector(".task-form__priority").value;
 
       const task = new Task({ name, description, dueDate, priority });
-      this.#addTaskToStorage(task);
+      this.#todo.addTask(task);
       this.#taskItemHandler.renderTaskItem(task);
 
       this.#DOMElements.taskPopover.close();
@@ -76,7 +75,7 @@ export class PopoverHandler {
 
       const project = new Project({ name: projectName });
       const projectItemUI = new ProjectItemUIHandler();
-      this.#addProjectToStorage(project);
+      this.#todo.createProject(project);
       projectItemUI.renderProjectItem(project);
       this.#DOMElements.projectsModal.close();
     });
@@ -88,6 +87,7 @@ export class PopoverHandler {
       }
     });
   }
+
   #handleTaskPopover() {
     this.#DOMElements.taskPopover.addEventListener("close", () => {
       this.#DOMElements.taskForm.reset();
@@ -95,20 +95,12 @@ export class PopoverHandler {
   }
 
   #handleProjectsPopover() {
-    this.#DOMElements.addProjectBtn.addEventListener("click", () => {
-      this.#DOMElements.projectsModal.showModal();
-    });
-
     this.#DOMElements.projectsClose.addEventListener("click", () => {
       this.#DOMElements.projectsModal.close();
     });
 
     this.#DOMElements.projectsModal.addEventListener("close", () => {
       this.#DOMElements.projectsForm.reset();
-    });
-
-    this.#DOMElements.projectsCancel.addEventListener("click", () => {
-      this.#DOMElements.projectsModal.close();
     });
   }
 
@@ -121,6 +113,16 @@ export class PopoverHandler {
     this.#DOMElements.cancelTaskBtn.addEventListener("click", (e) => {
       e.preventDefault();
       this.#DOMElements.taskPopover.close();
+    });
+  }
+
+  #handleProjectButtons() {
+    this.#DOMElements.addProjectBtn.addEventListener("click", () => {
+      this.#DOMElements.projectsModal.showModal();
+    });
+
+    this.#DOMElements.projectsCancel.addEventListener("click", () => {
+      this.#DOMElements.projectsModal.close();
     });
   }
 
@@ -143,13 +145,5 @@ export class PopoverHandler {
 
     this.#DOMElements.projectsAdd.disabled =
       !this.#DOMElements.projectName.checkValidity();
-  }
-
-  #addTaskToStorage(task) {
-    this.#todo.addTask(task);
-  }
-
-  #addProjectToStorage(project) {
-    this.#todo.createProject(project);
   }
 }
