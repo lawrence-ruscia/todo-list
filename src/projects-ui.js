@@ -11,6 +11,9 @@ export class ProjectsUIHandler {
   #title;
   #todo;
 
+  #projectItemUI;
+  #content;
+
   constructor() {
     this.#title = "My Projects";
     this.#todo = new Todo();
@@ -18,10 +21,15 @@ export class ProjectsUIHandler {
       projects: this.#domHandler.createDiv({ id: "projects" }),
       title: this.#createProjectTitle(),
       myProjects: this.#createMyProjects(),
+      list: document.querySelector(".my-projects__list"),
     };
+    this.#projectItemUI = new ProjectItemUIHandler();
+    this.#content = document.querySelector("#content");
   }
+
   setUpEventListeners() {
     this.#handleProjectCount();
+    this.renderProjectList();
   }
 
   #handleProjectCount() {
@@ -41,6 +49,19 @@ export class ProjectsUIHandler {
     projects.append(title, myProjects);
 
     return projects;
+  }
+
+  renderProjectList() {
+    document.addEventListener("ProjectUIUpdated", () => {
+      const list = document.querySelector(".my-projects__list");
+      list.innerHTML = ""; // clear list first
+
+      const projects = this.#todo.getAllProjectsInOrder();
+      projects.forEach((proj) => {
+        const projectItem = this.#createProjectItem(proj);
+        list.append(projectItem);
+      });
+    });
   }
 
   #createProjectTitle() {
@@ -84,13 +105,6 @@ export class ProjectsUIHandler {
       classNames: ["my-projects__list"],
     });
 
-    // TEMP:
-    const item1 = this.#createProjectItem(new Project({ name: "Project X" }));
-    const item2 = this.#createProjectItem(
-      new Project({ name: "Untitled Project" })
-    );
-    list.append(item1, item2);
-
     return list;
   }
 
@@ -101,6 +115,7 @@ export class ProjectsUIHandler {
     const li = this.#domHandler.createListItem({
       classNames: ["my-projects__item"],
     });
+    li.dataset.projectId = project.id;
 
     const img = this.#domHandler.createImg({
       src: hashIcon,
@@ -146,7 +161,7 @@ export class ProjectItemUIHandler {
   }
 
   render() {
-    const { projects, title, addTask, taskContainer } = this.#DOMElements;
+    const { projects, title, taskContainer } = this.#DOMElements;
     projects.append(title, taskContainer);
 
     return projects;

@@ -11,10 +11,6 @@ class PageRenderer {
   };
 
   constructor() {
-    const projects = this.#PageSections.projects;
-    this.#appendPage(projects);
-    document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
-
     const todo = new TodoUIHandler();
     todo.setUpPageEventListeners();
 
