@@ -11,6 +11,8 @@ class PageRenderer {
   };
 
   constructor() {
+    this.#appendPage(this.#PageSections.projects);
+
     const todo = new TodoUIHandler();
     todo.setUpPageEventListeners();
 
@@ -34,8 +36,9 @@ class PageRenderer {
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         }
 
-        if (pageKey === "projects")
+        if (pageKey === "projects") {
           document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
+        }
       }
     });
   }

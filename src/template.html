@@ -229,5 +229,47 @@
       </div>
     </dialog>
     <!-- Projects Modal End -->
+
+    <!-- MyProjects Modal Start -->
+    <dialog id="myProjects-modal">
+      <div class="myProjects__header">
+        <p class="myProjects__title">Edit project</p>
+        <button class="modal__close-btn myProjects__close-btn">
+          <img class="close-icon" src="./assets/icons/close-icon.svg" alt="" />
+        </button>
+      </div>
+
+      <form method="dialog" id="myProjects-form">
+        <div class="myProjects-form__text">
+          <label for="projectName" class="myProjects-form__label"
+            >Project name</label
+          >
+          <input
+            type="text"
+            id="myProjectName"
+            class="project-name"
+            name="projectTitle"
+            required
+            autocomplete="off"
+          />
+        </div>
+      </form>
+      <div class="myProjects__footer">
+        <button type="button" class="myProjects__delete">Delete</button>
+
+        <div class="footer__left">
+          <button
+            type="button"
+            class="myProjects__cancel button--large filled-button"
+          >
+            Cancel
+          </button>
+          <button class="myProjects__save cta-button" form="myProjects-form">
+            Save
+          </button>
+        </div>
+      </div>
+    </dialog>
+    <!-- Project-item Modal End -->
   </body>
 </html>

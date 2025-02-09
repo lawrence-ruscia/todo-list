@@ -19,6 +19,7 @@
   --color-placeholder: #808080;
   --color-secondary-btn: #e5e5e577;
   --color-delete: #ff7f74;
+  --color-delete-hover: #cf382d4b;
   --color-cta: #de4c4a;
   --color-cta-hover: #da6d6b;
   --color-cta-disabled: #de4c4a41;
@@ -901,4 +902,108 @@ input[type="text"] {
 
 .my-projects__item img {
   width: 28px;
+}
+
+/* MyProjects Modal */
+#myProjects-modal[open] {
+  outline: 0;
+  border-radius: var(--radius-medium);
+  background-color: var(--color-primary);
+  color: var(--color-text-primary);
+
+  display: grid;
+  grid-template-rows: 70px 1fr auto;
+
+  width: 600px;
+  padding: 0;
+  border: none;
+  max-width: 60%;
+  min-height: 30vh;
+}
+
+#myProjects-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.myProjects__header {
+  border-bottom: 1px solid var(--color-border);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: var(--spacing-sm);
+}
+
+#myProjects-form {
+  padding: var(--spacing-md);
+}
+
+.myProjects-form__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.myProjects-form__label {
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-bold);
+}
+
+#myProjectName {
+  outline: 1px solid var(--color-border);
+  border-radius: var(--radius-x-small);
+
+  padding: var(--spacing-xs);
+
+  font-size: 1.2rem;
+}
+
+#myProjectName:focus,
+#myProjectName:active {
+  outline-color: var(--color-outline);
+}
+
+.myProjects__footer {
+  border-top: 1px solid var(--color-border);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: var(--spacing-md);
+}
+
+.myProjects__footer button {
+  border-radius: var(--radius-small);
+}
+
+.myProjects__delete {
+  padding: var(--button-padding-large);
+
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+
+  color: var(--color-delete);
+}
+
+.myProjects__delete:hover {
+  background-color: var(--color-delete-hover);
+}
+
+.myProjects__footer .footer__left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.myProjects__save {
+  font-size: var(--button-font-large);
+  padding: 12px 28px;
+}
+
+.myProjects__title {
+  font-size: 1.3rem;
+  font-weight: var(--font-weight-bold);
 }

@@ -22,6 +22,11 @@ export class ProjectsUIHandler {
       title: this.#createProjectTitle(),
       myProjects: this.#createMyProjects(),
       list: document.querySelector(".my-projects__list"),
+
+      modal: document.querySelector("#myProjects-modal"),
+      form: document.querySelector("#myProjects-form"),
+      name: document.querySelector("#myProjectName"),
+      body: document.body,
     };
     this.#projectItemUI = new ProjectItemUIHandler();
     this.#content = document.querySelector("#content");
@@ -30,6 +35,9 @@ export class ProjectsUIHandler {
   setUpEventListeners() {
     this.#handleProjectCount();
     this.renderProjectList();
+    this.#handleMyProjectsModal();
+    this.#renderProjectDetailsOnModal();
+    this.#handleFormSubmit();
   }
 
   #handleProjectCount() {
@@ -41,6 +49,58 @@ export class ProjectsUIHandler {
         totalProjects === 1
           ? `${totalProjects} project`
           : `${totalProjects} projects`;
+    });
+  }
+
+  #handleMyProjectsModal() {
+    this.#DOMElements.body.addEventListener("click", (e) => {
+      console.log("list item clicked");
+      const target = e.target;
+
+      if (
+        target.dataset.projectId &&
+        target.classList.contains("my-projects__item")
+      ) {
+        document.dispatchEvent(
+          new CustomEvent("myProjectsModalLoaded", {
+            detail: target.dataset.projectId,
+          })
+        );
+        this.#DOMElements.modal.showModal();
+      }
+
+      const closeBtn = target.closest(".modal__close-btn");
+
+      if (target.classList.contains("myProjects__cancel") || closeBtn) {
+        this.#DOMElements.modal.close();
+      }
+    });
+  }
+
+  #renderProjectDetailsOnModal() {
+    document.addEventListener("myProjectsModalLoaded", (e) => {
+      const nameInput = this.#DOMElements.name;
+      const projectId = e.detail;
+      const project = this.#todo.getProject(projectId);
+
+      nameInput.value = project.name;
+      this.#DOMElements.modal.dataset.projectId = projectId;
+    });
+  }
+
+  #handleFormSubmit() {
+    this.#DOMElements.body.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const updatedProjectName = this.#DOMElements.name.value;
+      const projectId = this.#DOMElements.modal.dataset.projectId;
+
+      if (projectId) {
+        this.#todo.updateProjectName(projectId, updatedProjectName);
+        document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
+        this.#projectItemUI.renderProjects();
+        console.log("Project updated!");
+        this.#DOMElements.modal.close();
+      }
     });
   }
 
@@ -170,6 +230,8 @@ export class ProjectItemUIHandler {
   renderProjects() {
     const projects = this.#todo.getAllProjectsInOrder();
     console.log(projects);
+    const projectList = document.querySelector(".project-list");
+    projectList.innerHTML = "";
 
     projects.forEach((project) => {
       this.renderProjectItem(project);
