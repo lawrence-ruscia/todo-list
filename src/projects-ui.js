@@ -95,9 +95,14 @@ export class ProjectsUIHandler {
       const projectId = this.#DOMElements.modal.dataset.projectId;
 
       if (projectId) {
-        this.#todo.updateProjectName(projectId, updatedProjectName);
+        const updatedProject = new Project({ name: updatedProjectName });
+        // Update project on todo
+        this.#todo.updateProjectName(projectId, updatedProject);
+
+        // Notify projectList and myProjectList to update their projects list
         document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
         this.#projectItemUI.renderProjects();
+
         console.log("Project updated!");
         this.#DOMElements.modal.close();
       }

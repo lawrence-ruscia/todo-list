@@ -349,22 +349,24 @@ export class Todo {
     localStorage.setItem(projectId, JSON.stringify(project));
   }
 
-  updateProjectName(projectId, newProjectName) {
+  updateProjectName(projectId, updatedProject) {
     if (!projectId) throw new Error(`Invalid project Id: ${projectId}`);
-    if (!newProjectName)
+    if (!updatedProject)
       throw new Error(
-        `Invalid project name: ${JSON.stringify(newProjectName)}`
+        `Invalid project name: ${JSON.stringify(updatedProject)}`
       );
 
     const project = this.getProject(projectId);
 
     // update name
-    project.name = newProjectName;
+    project.name = updatedProject.name;
 
     // update project in `projects` and `localStorage`
     this.addProject(projectId, project);
     this.#saveProjectToLocalStorage(projectId, project);
   }
+
+  deleteProject() {}
 
   setCurrentProject(projectId) {
     const projects = JSON.parse(localStorage.getItem("projects"));
