@@ -38,6 +38,7 @@ export class ProjectsUIHandler {
     this.#handleMyProjectsModal();
     this.#renderProjectDetailsOnModal();
     this.#handleFormSubmit();
+    this.#handleProjectDelete();
   }
 
   #handleProjectCount() {
@@ -57,6 +58,7 @@ export class ProjectsUIHandler {
       console.log("list item clicked");
       const target = e.target;
 
+      // Handle modal open
       if (
         target.dataset.projectId &&
         target.classList.contains("my-projects__item")
@@ -66,15 +68,25 @@ export class ProjectsUIHandler {
             detail: target.dataset.projectId,
           })
         );
+
+        // Update `currentProject`
+        this.#todo.setCurrentProject(target.dataset.projectId);
+
         this.#DOMElements.modal.showModal();
       }
 
+      // Handle modal close
       const closeBtn = target.closest(".modal__close-btn");
-
       if (target.classList.contains("myProjects__cancel") || closeBtn) {
+        this.#deleteProjectIdDataset();
+
         this.#DOMElements.modal.close();
       }
     });
+  }
+
+  #deleteProjectIdDataset() {
+    delete this.#DOMElements.modal.dataset.projectId;
   }
 
   #renderProjectDetailsOnModal() {
@@ -95,16 +107,45 @@ export class ProjectsUIHandler {
       const projectId = this.#DOMElements.modal.dataset.projectId;
 
       if (projectId) {
-        const updatedProject = new Project({ name: updatedProjectName });
-        // Update project on todo
+        const projectData = this.#todo.getProject(projectId);
+        const updatedProject = {
+          id: projectData.id,
+          name: updatedProjectName,
+          taskList: projectData.taskList.length > 0 ? projectData.taskList : [],
+        };
+        console.log(JSON.stringify(updatedProject));
+        // // Update project on todo
         this.#todo.updateProjectName(projectId, updatedProject);
 
         // Notify projectList and myProjectList to update their projects list
         document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
         this.#projectItemUI.renderProjects();
 
+        this.#deleteProjectIdDataset();
+
         console.log("Project updated!");
         this.#DOMElements.modal.close();
+      }
+    });
+  }
+
+  #handleProjectDelete() {
+    this.#DOMElements.body.addEventListener("click", (e) => {
+      const target = e.target;
+
+      if (target.classList.contains("myProjects__delete")) {
+        const projectId = this.#DOMElements.modal.dataset.projectId;
+        if (projectId) {
+          this.#todo.deleteProject(projectId);
+
+          // Notify projectList and myProjectList to update their projects list
+          document.dispatchEvent(new CustomEvent("ProjectUIUpdated"));
+          this.#projectItemUI.renderProjects();
+
+          this.#deleteProjectIdDataset();
+
+          this.#DOMElements.modal.close();
+        }
       }
     });
   }
@@ -244,7 +285,6 @@ export class ProjectItemUIHandler {
     });
   }
 
-  // FIXME: Duplicate rendering
   renderProjectItem(project) {
     const projectList = document.querySelector(".project-list");
     const projectItem = this.#createProjectItem(project);

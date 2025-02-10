@@ -125,6 +125,10 @@ export class Project {
     return this.#taskList;
   }
 
+  set taskList(newTaskList) {
+    this.#taskList = newTaskList;
+  }
+
   // Override toJSON() to preserve methods and private properties
   toJSON() {
     return {
@@ -173,6 +177,12 @@ export class Todo {
 
   addProject(projectId, project) {
     this.#projects[projectId] = project;
+
+    this.#saveProjects();
+  }
+
+  removeProject(projectId) {
+    delete this.#projects[projectId];
 
     this.#saveProjects();
   }
@@ -339,7 +349,10 @@ export class Todo {
     const rehydratedProject = {
       id: rawProjectData.id,
       name: rawProjectData.name,
-      taskList: rawProjectData.taskList.map((task) => Task.fromJSON(task)),
+      taskList:
+        rawProjectData.taskList.length > 0
+          ? rawProjectData.taskList.map((task) => Task.fromJSON(task))
+          : [],
     };
 
     return Project.fromJSON(rehydratedProject);
@@ -356,17 +369,41 @@ export class Todo {
         `Invalid project name: ${JSON.stringify(updatedProject)}`
       );
 
-    const project = this.getProject(projectId);
+    console.log(JSON.stringify(updatedProject));
 
-    // update name
-    project.name = updatedProject.name;
-
-    // update project in `projects` and `localStorage`
-    this.addProject(projectId, project);
-    this.#saveProjectToLocalStorage(projectId, project);
+    // // update project in `projects` and `localStorage`
+    this.addProject(projectId, updatedProject);
+    this.#saveProjectToLocalStorage(projectId, updatedProject);
   }
 
-  deleteProject() {}
+  deleteProject(projectId) {
+    if (!projectId) throw new Error(`Invalid project id: ${projectId}`);
+
+    const taskList = this.getProject(projectId).taskList;
+    if (taskList) {
+      console.log("Removing tasks...");
+      taskList.forEach((task) => {
+        this.deleteTask(task);
+      });
+    }
+
+    // Remove from `localStorage`
+    localStorage.removeItem(projectId);
+
+    // Remove from `projectsOrder`
+    const projectOrder = JSON.parse(localStorage.getItem("projectOrder")) ?? [];
+    const projectsOrderIndex = projectOrder.indexOf(projectId);
+
+    if (projectsOrderIndex !== -1) {
+      projectOrder.splice(projectsOrderIndex, 1);
+      localStorage.setItem("projectOrder", JSON.stringify(projectOrder));
+    }
+
+    // Remove from `projects`
+    this.removeProject(projectId);
+
+    console.log(`Removed project ${projectId}`);
+  }
 
   setCurrentProject(projectId) {
     const projects = JSON.parse(localStorage.getItem("projects"));
@@ -401,14 +438,15 @@ export class Todo {
     );
 
     // Update "projects" from localStorage
-    this.#saveProjects();
+    this.addProject(this.#currentProject.id, currentProject);
 
     // Update "currentProject" from localStorage
     this.#saveCurrentProject();
+
+    // Update on the project itself on localStorage
+    this.#saveProjectToLocalStorage(this.#currentProject.id, currentProject);
   }
 
-  // NOTE: When no project is selected,
-  //          tasklist items becomes null after doing remove/update operations
   removeFromProjectTaskList(task) {
     if (!task) throw new Error(`Invalid task: ${JSON.stringify(task)}`);
 
