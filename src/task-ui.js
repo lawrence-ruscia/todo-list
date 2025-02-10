@@ -9,6 +9,7 @@ export class TaskItemHandler {
     modalDetails: document.querySelector(".modal__details"),
     itemForm: document.querySelector("#item-form"),
     titleInput: document.querySelector(".item-form__title"),
+    saveBtn: document.querySelector(".item-form__save"),
     descriptionInput: document.querySelector(".item-form__description"),
     dueDateInput: document.querySelector(".item-form__date"),
     priorityInput: document.querySelector(".item-form__priority"),
@@ -131,6 +132,7 @@ export class TaskItemHandler {
       const form = this.#DOMElements.itemForm;
       const actions = document.querySelector(".item-form__actions");
       const text = document.querySelector(".item-form__text");
+      const modal = this.#DOMElements.modal;
 
       form.addEventListener("focusin", (e) => {
         const input = e.target;
@@ -147,6 +149,39 @@ export class TaskItemHandler {
           actions.style.display = "none";
           text.classList.remove("item-form__text--focus");
         }
+
+        if (button.classList.contains("item-form__save")) {
+          if (!form.checkValidity()) {
+            form.reportValidity(); // Show validation errors
+            return;
+          }
+
+          // Form is valid, proceed with saving
+          actions.style.display = "none";
+          text.classList.remove("item-form__text--focus");
+        }
+      });
+
+      form.addEventListener("submit", (e) => {
+        if (!form.checkValidity()) {
+          form.reportValidity(); // Show browser validation messages
+          e.preventDefault(); // Stop form submission
+          return;
+        }
+
+        // Form is valid, proceed with saving
+        actions.style.display = "none";
+        text.classList.remove("item-form__text--focus");
+        modal.close();
+      });
+    })();
+
+    const handleInput = (() => {
+      const titleInput = this.#DOMElements.titleInput;
+      const saveBtn = this.#DOMElements.saveBtn;
+      titleInput.addEventListener("input", (e) => {
+        const target = e.target;
+        saveBtn.disabled = !target.value.length;
       });
     })();
   }
