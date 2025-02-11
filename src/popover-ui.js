@@ -45,16 +45,28 @@ export class PopoverHandler {
     this.#DOMElements.taskForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
+      // reset checkbox value
+      document.querySelector(".checkbox__input").checked = false;
+
       const name = document.querySelector(".task-form__title").value;
       const description = document.querySelector(
         ".task-form__description"
       ).value;
       const dueDate = document.querySelector(".task-form__date").value;
       const priority = document.querySelector(".task-form__priority").value;
+      const isCompleted = document.querySelector(".checkbox__input").checked;
 
-      const task = new Task({ name, description, dueDate, priority });
+      const task = new Task({
+        name,
+        description,
+        dueDate,
+        priority,
+        isCompleted,
+      });
+
       this.#todo.addTask(task);
       this.#taskItemHandler.renderTaskItem(task);
+      this.#taskItemHandler.renderTasks();
 
       this.#DOMElements.taskPopover.close();
     });

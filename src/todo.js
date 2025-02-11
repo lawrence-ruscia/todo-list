@@ -1,26 +1,22 @@
 export class Task {
   #id;
-  #projectId;
   #name;
   #description;
   #dueDate;
   #priority;
+  #isCompleted;
 
-  constructor({ id, projectId, name, description, dueDate, priority } = {}) {
+  constructor({ id, name, description, dueDate, priority, isCompleted } = {}) {
     this.#id = id ?? crypto.randomUUID(); // Generate UUID if there isn't one already set
-    this.#projectId = projectId; // Reference to the project that contains it
     this.#name = this.#validateName(name);
     this.#description = this.#validateDescription(description);
     this.#dueDate = this.#validateDueDate(new Date(dueDate));
     this.#priority = this.#validatePriority(priority);
+    this.#isCompleted = isCompleted ?? false;
   }
 
   get id() {
     return this.#id;
-  }
-
-  get projectId() {
-    return this.#projectId;
   }
 
   get name() {
@@ -37,6 +33,10 @@ export class Task {
 
   get priority() {
     return this.#priority;
+  }
+
+  get isCompleted() {
+    return this.#isCompleted;
   }
 
   #validateName(name) {
@@ -83,6 +83,7 @@ export class Task {
       description: this.#description,
       dueDate: this.#dueDate,
       priority: this.#priority,
+      isCompleted: this.#isCompleted,
     };
   }
 
@@ -291,6 +292,7 @@ export class Todo {
       description: updatedTask.description,
       dueDate: updatedTask.dueDate,
       priority: updatedTask.priority,
+      isCompleted: updatedTask.isCompleted,
     });
 
     localStorage.setItem(taskId, JSON.stringify(modifiedTask));

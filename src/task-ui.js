@@ -9,6 +9,7 @@ export class TaskItemHandler {
     modalDetails: document.querySelector(".modal__details"),
     itemForm: document.querySelector("#item-form"),
     titleInput: document.querySelector(".item-form__title"),
+    checkbox: document.querySelector(".checkbox__input"),
     saveBtn: document.querySelector(".item-form__save"),
     descriptionInput: document.querySelector(".item-form__description"),
     dueDateInput: document.querySelector(".item-form__date"),
@@ -34,6 +35,12 @@ export class TaskItemHandler {
     const tasks = this.#todo.getAllTasksInOrder();
     console.log(tasks);
 
+    const taskItems = document.querySelectorAll(".task-item");
+    let i = taskItems.length;
+    while (i--) {
+      taskItems[i].remove();
+    }
+
     tasks.forEach((task) => {
       this.renderTaskItem(task);
       console.log(`Rendered task: ${task.name}`);
@@ -54,7 +61,7 @@ export class TaskItemHandler {
     // Assign data attr for later retrieval
     taskItem.dataset.taskId = task.id;
 
-    const details = this.#createTaskDetails(task.name);
+    const details = this.#createTaskDetails(task);
     const options = this.#createTaskOptions();
 
     taskItem.append(details, options);
@@ -62,7 +69,7 @@ export class TaskItemHandler {
     return taskItem;
   }
 
-  #createTaskDetails(name) {
+  #createTaskDetails({ name, isCompleted }) {
     const details = this.#domHandler.createDiv({
       classNames: ["task__details"],
     });
@@ -71,6 +78,7 @@ export class TaskItemHandler {
     });
     const input = this.#domHandler.createInput({
       type: "checkbox",
+      checked: isCompleted,
       classNames: ["checkbox__input"],
     });
     const box = this.#domHandler.createSpan({
@@ -186,7 +194,6 @@ export class TaskItemHandler {
     })();
   }
 
-  // TODO: Render checkbox data if the task is already done
   #renderItemDetails() {
     const container = this.#DOMElements.taskContainer;
     container.addEventListener("click", (e) => {
@@ -199,16 +206,21 @@ export class TaskItemHandler {
         console.log(`Task selected: ${taskId}`);
         const task = this.#todo.getTask(taskId);
 
+        if (!task) return; // Prevent errors
+
         // Render task data on input fields
         const titleInput = this.#DOMElements.titleInput;
         const descriptionInput = this.#DOMElements.descriptionInput;
         const dueDateInput = this.#DOMElements.dueDateInput;
         const priorityInput = this.#DOMElements.priorityInput;
 
+        const checkBoxInput = this.#DOMElements.checkbox;
+
         titleInput.value = task.name;
         descriptionInput.value = task.description;
         dueDateInput.value = task.dueDate;
         priorityInput.value = task.priority;
+        checkBoxInput.checked = task.isCompleted;
 
         this.#handleDeleteClick(task);
 
@@ -230,13 +242,17 @@ export class TaskItemHandler {
       const descriptionInput = this.#DOMElements.descriptionInput;
       const dueDateInput = this.#DOMElements.dueDateInput;
       const priorityInput = this.#DOMElements.priorityInput;
+      const checkboxInput = this.#DOMElements.checkbox;
 
       const updatedTask = new Task({
         name: titleInput.value,
         description: descriptionInput.value,
         dueDate: dueDateInput.value,
         priority: priorityInput.value,
+        isCompleted: checkboxInput.checked,
       });
+
+      checkboxInput.checked = false;
 
       // Update task in localStorage
       this.#todo.editTask(taskId, updatedTask);
@@ -244,6 +260,7 @@ export class TaskItemHandler {
       // Update task details in the DOM
       this.#updateTaskItem(taskId, updatedTask);
       console.log(`Task ${taskId} has been updated.`);
+      delete form.dataset.taskId;
     });
   }
 
@@ -283,6 +300,8 @@ export class TaskItemHandler {
         // Modify the task title text content
         console.log("Task Item Located!");
         taskItem.querySelector(".task__title").textContent = updatedTask.name;
+        taskItem.querySelector(".checkbox__input").checked =
+          updatedTask.isCompleted;
       }
     });
   }

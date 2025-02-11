@@ -136,6 +136,7 @@ export class DOMHandler {
     placeholder = "",
     required = false,
     readOnly = false,
+    checked = false,
     min = "",
     max = "",
     value = "",
@@ -150,6 +151,7 @@ export class DOMHandler {
     input.placeholder = placeholder;
     input.required = !!required;
     input.readOnly = !!readOnly;
+    input.checked = !!checked;
     input.min = min;
     input.max = max;
     input.value = value;

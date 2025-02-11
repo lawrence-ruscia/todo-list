@@ -591,11 +591,13 @@ input[type="text"] {
 
 /* Task Details Section*/
 .task__details {
-  pointer-events: none;
-
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+}
+
+.task__details > p {
+  pointer-events: none;
 }
 
 /* Custom Checkbox */
