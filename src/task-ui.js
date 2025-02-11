@@ -29,6 +29,7 @@ export class TaskItemHandler {
     this.#handleModal();
     this.#renderItemDetails();
     this.#handleSaveClick();
+    this.#handleCheckboxChange();
   }
 
   renderTasks() {
@@ -194,6 +195,40 @@ export class TaskItemHandler {
     })();
   }
 
+  #handleCheckboxChange() {
+    this.#DOMElements.taskContainer.addEventListener("change", (e) => {
+      const target = e.target;
+
+      if (target.closest(".checkbox__input")) {
+        const taskItem = target.closest(".task-item");
+
+        if (taskItem) {
+          console.log("Target found");
+          const taskId = taskItem.dataset.taskId;
+          const taskData = this.#todo.getTask(taskId);
+          const checkboxInput = taskItem.querySelector(".checkbox__input");
+
+          const updatedTask = new Task({
+            name: taskData.name,
+            description: taskData.description,
+            dueDate: taskData.dueDate,
+            priority: taskData.priority,
+            isCompleted: checkboxInput.checked,
+          });
+
+          checkboxInput.checked = false;
+
+          // Update task in localStorage
+          this.#todo.editTask(taskId, updatedTask);
+
+          // Update task details in the DOM
+          this.#updateTaskItem(taskId, updatedTask);
+          console.log(`Task ${taskId} has been updated.`);
+        }
+      }
+    });
+  }
+
   #renderItemDetails() {
     const container = this.#DOMElements.taskContainer;
     container.addEventListener("click", (e) => {
@@ -260,7 +295,6 @@ export class TaskItemHandler {
       // Update task details in the DOM
       this.#updateTaskItem(taskId, updatedTask);
       console.log(`Task ${taskId} has been updated.`);
-      delete form.dataset.taskId;
     });
   }
 
