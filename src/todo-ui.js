@@ -72,10 +72,15 @@ class SidebarHandler {
 
   #handleMenuClick() {
     let selectedButton = null;
+    const projectsBtn = document.querySelector("#projects-btn");
     this.#sidebar.addEventListener("click", (e) => {
       const button = e.target.closest(".page-button");
 
       if (!button || button === selectedButton) return;
+
+      if (button) {
+        projectsBtn.classList.remove("sidebar__btn--selected");
+      }
 
       if (selectedButton) {
         selectedButton.classList.remove("sidebar__btn--selected");
