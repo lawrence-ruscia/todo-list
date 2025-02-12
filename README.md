@@ -60,4 +60,4 @@ npm run deploy
 
 ## Live Demo
 
-https://lawrence-ruscia.github.io/restaurant-page/
+https://lawrence-ruscia.github.io/todo-list/
