@@ -33,6 +33,8 @@ export class TodoUIHandler {
     this.#components.projectItemUI.setUpEventListeners();
     this.#components.sidebarHandler.setUpEventListeners();
     this.#components.themeHandler.setUpEventListeners();
+
+    this.#components.popover.setUpProjectsPopoverListeners();
   }
 
   setUpTaskEventListeners() {

@@ -33,12 +33,8 @@ export class PopoverHandler {
   setUpEventListeners() {
     this.#handleTaskPopover();
     this.#handleTaskForm();
-    this.#handleProjectsForm();
     this.#handleTaskButtons();
-    this.#handleProjectButtons();
-    this.#handleInvalidInputs();
-
-    this.#handleProjectsPopover();
+    this.#validateTaskTitle();
   }
 
   #handleTaskForm() {
@@ -106,7 +102,7 @@ export class PopoverHandler {
     });
   }
 
-  #handleProjectsPopover() {
+  setUpProjectsPopoverListeners() {
     this.#DOMElements.projectsClose.addEventListener("click", () => {
       this.#DOMElements.projectsModal.close();
     });
@@ -114,11 +110,15 @@ export class PopoverHandler {
     this.#DOMElements.projectsModal.addEventListener("close", () => {
       this.#DOMElements.projectsForm.reset();
     });
+
+    this.#handleProjectsForm();
+    this.#handleProjectButtons();
+    this.#validateProjectName();
   }
 
   #handleTaskButtons() {
     this.#DOMElements.addTaskBtn.addEventListener("click", () => {
-      this.#validateInput();
+      this.#toggleConfirmAddTaskBtn();
       this.#DOMElements.taskPopover.show();
     });
 
@@ -129,32 +129,32 @@ export class PopoverHandler {
   }
 
   #handleProjectButtons() {
-    this.#DOMElements.addProjectBtn.addEventListener("click", () => {
-      this.#DOMElements.projectsModal.showModal();
-    });
-
     this.#DOMElements.projectsCancel.addEventListener("click", () => {
       this.#DOMElements.projectsModal.close();
     });
+    this.#DOMElements.addProjectBtn.addEventListener("click", () => {
+      this.#DOMElements.projectsModal.showModal();
+    });
   }
 
-  #handleInvalidInputs() {
+  #validateTaskTitle() {
     this.#DOMElements.taskFormTitle.addEventListener("input", () => {
-      this.#DOMElements.confirmAddTaskBtn.disabled =
-        !this.#DOMElements.taskFormTitle.checkValidity();
-    });
-
-    this.#DOMElements.projectName.addEventListener("input", () => {
-      this.#DOMElements.projectsAdd.disabled =
-        !this.#DOMElements.projectName.checkValidity();
+      this.#toggleConfirmAddTaskBtn();
     });
   }
 
-  // HACK: Duplicate code with the handleInvalidInputs, provide a better solution
-  #validateInput() {
+  #validateProjectName() {
+    this.#DOMElements.projectName.addEventListener("input", () => {
+      this.#toggleProjectsAddBtn();
+    });
+  }
+
+  #toggleConfirmAddTaskBtn() {
     this.#DOMElements.confirmAddTaskBtn.disabled =
       !this.#DOMElements.taskFormTitle.checkValidity();
+  }
 
+  #toggleProjectsAddBtn() {
     this.#DOMElements.projectsAdd.disabled =
       !this.#DOMElements.projectName.checkValidity();
   }
